@@ -13,7 +13,7 @@ namespace PivotalTrackerDotNet.Tests
         [Test]
         public void CanAuthenticateWithValidCredentials()
         {
-            var token = AuthenticationService.Authenticate(TestCredentials.Username, TestCredentials.Password);
+            var token = AuthenticationService.Authenticate(Constants.Username, Constants.Password);
             Assert.IsNotNull(token);
             Assert.IsNotNull(token.Guid);
             Assert.AreNotEqual(Guid.Empty, token.Guid);

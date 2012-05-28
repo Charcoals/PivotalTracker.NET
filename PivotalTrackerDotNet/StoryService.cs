@@ -20,7 +20,7 @@ namespace PivotalTrackerDotNet {
         Story GetStory(int projectId, int storyId);
         Story RemoveStory(int projectId, int storyId);
         Task GetTask(int projectId, int storyId, int taskId);
-        Task RemoveTask(int projectId, int storyId, int taskId);
+        bool RemoveTask(int projectId, int storyId, int taskId);
         void SaveTask(Task task);
         void ReorderTasks(int projectId, int storyId, List<Task> tasks);
         void AddComment(int projectId, int storyId, string comment);
@@ -31,11 +31,11 @@ namespace PivotalTrackerDotNet {
         const string SingleStoryEndpoint = "projects/{0}/stories/{1}";
         private const string AllStoriesEndpoint = "projects/{0}/stories";
         const string TaskEndpoint = "projects/{0}/stories/{1}/tasks";
-        const string SaveStoryEndpoint = "projects/{0}/stories?story[name]={1}&story[requested_by]={2}&story[description]={3}&story[story_type]={4}";
+        private const string SaveStoryEndpoint = "projects/{0}/stories";
         const string SaveNewTaskEndpoint = "projects/{0}/stories/{1}/tasks?task[description]={2}";
         const string SaveNewCommentEndpoint = "projects/{0}/stories/{1}/notes?note[text]={2}";
         const string SingleTaskEndpoint = "projects/{0}/stories/{1}/tasks/{2}";//projects/$PROJECT_ID/stories/$STORY_ID/tasks/$TASK_ID
-        const string IceBoxEndpoint = "projects/{0}/stories?filter=current_state:unscheduled";
+        const string IceBoxEndpoint = "projects/{0}/stories?filter=state:unscheduled";
         const string StoryStateEndpoint = "projects/{0}/stories/{1}?story[current_state]={2}";
 
         public StoryService(AuthenticationToken token)
@@ -114,8 +114,9 @@ namespace PivotalTrackerDotNet {
 
         public Story AddNewStory(int projectId, Story toBeSaved) {
             var request = BuildPostRequest();
-            request.Resource = string.Format(SaveStoryEndpoint, projectId, toBeSaved.Name, toBeSaved.RequestedBy, toBeSaved.Description, toBeSaved.StoryType);
-
+            request.Resource = string.Format(SaveStoryEndpoint, projectId);
+            request.AddParameter("application/xml", toBeSaved.ToXml(), ParameterType.RequestBody);
+           
             var response = RestClient.Execute<Story>(request);
             var story = response.Data;
 
@@ -140,17 +141,20 @@ namespace PivotalTrackerDotNet {
         public Task AddNewTask(Task task) {
             var request = BuildPostRequest();
             request.Resource = string.Format(SaveNewTaskEndpoint, task.ProjectId, task.ParentStoryId, task.Description);
-
+            //request.AddParameter("application/xml", toBeSaved.ToXml(), ParameterType.RequestBody);
             var response = RestClient.Execute<Task>(request);
-            return response.Data;
+            var savedTask = response.Data;
+            savedTask.ParentStoryId = task.ParentStoryId;
+            savedTask.ProjectId = task.ProjectId;
+            return savedTask;
         }
 
-        public Task RemoveTask(int projectId, int storyId, int taskId) {
+        public bool RemoveTask(int projectId, int storyId, int taskId) {
             var request = BuildDeleteRequest();
             request.Resource = string.Format(SingleTaskEndpoint, projectId, storyId, taskId);
 
             var response = RestClient.Execute<Task>(request);
-            return response.Data;
+            return response.Data == null;
         }
 
         public Task GetTask(int projectId, int storyId, int taskId) {

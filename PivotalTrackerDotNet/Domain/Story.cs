@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace PivotalTrackerDotNet.Domain {
+    
     public class Story {
         public int Id { get; set; }
         public int ProjectId { get; set; }
@@ -15,6 +17,18 @@ namespace PivotalTrackerDotNet.Domain {
         public string RequestedBy { get; set; }
         public List<Note> Notes { get; set; }
         public List<Task> Tasks { get; set; }
+
+        public string ToXml()
+        {
+            return new XElement("story",
+                                new XElement("project_id", ProjectId),
+                                new XElement("name", Name),
+                                new XElement("story_type", StoryType.ToString().ToLower()),
+                                new XElement("description", Description),
+                                //new XElement("estimate", Estimate),
+                                new XElement("requested_by", RequestedBy))
+                    .ToString(SaveOptions.DisableFormatting);
+        }
     }
 
     public enum StoryStatus { UnScheduled, UnStarted, Started, Finished, Delivered, Accepted, Rejected }
