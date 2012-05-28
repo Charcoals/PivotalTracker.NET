@@ -9,3 +9,5 @@ user.config
 *.csproj.user*
 *.user
 *.Publish.xml
+.nuget/PivotalTrackerDotNet/lib/net40
+PivotalTrackerDotNet.1.0.0.nupkg

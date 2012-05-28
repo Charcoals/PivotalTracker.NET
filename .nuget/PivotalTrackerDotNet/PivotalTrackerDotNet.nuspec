@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>PivotalTrackerDotNet</id>
+    <version>1.0.0</version>
+    <authors>Boguste Hameyie, Alexander Ullrich</authors>
+    <owners>Boguste Hameyie, Alexander Ullrich</owners>
+    <projectUrl>https://github.com/Charcoals/PivotalTracker.NET</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A wrapper for the Pivotal Tracker Rest API</description>
+	<licenseUrl>https://github.com/Charcoals/PivotalTracker.NET/blob/master/LICENSE</licenseUrl>
+	<language>en-US</language>
+    <copyright>Charcoals 2012 and contributors</copyright>
+    <tags>Pivotal Tracker</tags>
+    <dependencies>
+      <dependency id="RestSharp"/>
+    </dependencies>
+  </metadata>
+</package>
