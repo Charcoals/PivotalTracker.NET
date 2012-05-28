@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotalTrackerDotNet", "PivotalTrackerDotNet\PivotalTrackerDotNet.csproj", "{579B9125-0944-4C30-A31F-6C70A0DDE1C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotalTrackerDotNet.Tests", "PivotalTrackerDotNet.Tests\PivotalTrackerDotNet.Tests.csproj", "{F8BBC90D-76F0-4787-9041-A13398BF5331}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{579B9125-0944-4C30-A31F-6C70A0DDE1C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{579B9125-0944-4C30-A31F-6C70A0DDE1C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{579B9125-0944-4C30-A31F-6C70A0DDE1C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{579B9125-0944-4C30-A31F-6C70A0DDE1C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8BBC90D-76F0-4787-9041-A13398BF5331}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8BBC90D-76F0-4787-9041-A13398BF5331}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8BBC90D-76F0-4787-9041-A13398BF5331}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8BBC90D-76F0-4787-9041-A13398BF5331}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
