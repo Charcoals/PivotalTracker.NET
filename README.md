@@ -12,7 +12,7 @@ Sample Usage
 ### Authenticating
 
 ```csharp
-AuthenticationToken authenticationToken = AuthenticationService.Authenticate("myUsername", "myPassword")
+AuthenticationToken authenticationToken = AuthenticationService.Authenticate("user", "pass");
 ```
 
 ### Retrieving All Stories
