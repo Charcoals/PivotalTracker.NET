@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace PivotalTrackerDotNet.Tests
 {
+
     [TestFixture]
     public class StoryServiceTest
     {
@@ -21,7 +22,7 @@ namespace PivotalTrackerDotNet.Tests
             var stories = storyService.GetAllStories(Constants.ProjectId);
             foreach (var storey in stories)
             {
-                var jawn = storyService.RemoveStory(Constants.ProjectId, storey.Id);
+                storyService.RemoveStory(Constants.ProjectId, storey.Id);
             }
         }
 
@@ -76,7 +77,49 @@ namespace PivotalTrackerDotNet.Tests
             Assert.AreEqual(savedStory.Id, stories[0].Id);
         }
 
-        [Test, Ignore("The code works, but there appears to be a lag with pivotal tracker's filter search")]
+        [Test]
+        public void CanGetAllStoriesMatchingFilter()
+        {
+            var story1 = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedBy = "pivotaltrackerdotnet",
+                StoryType = StoryType.Bug,
+                Description = "some story",
+                ProjectId = Constants.ProjectId
+            };
+
+            var story2 = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedBy = "pivotaltrackerdotnet",
+                StoryType = StoryType.Feature,
+                Description = "another story",
+                ProjectId = Constants.ProjectId
+            };
+
+            var story3 = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedBy = "pivotaltrackerdotnet",
+                StoryType = StoryType.Feature,
+                Description = "yet another story",
+                ProjectId = Constants.ProjectId
+            };
+
+            var savedStory = storyService.AddNewStory(Constants.ProjectId, story1);
+
+            storyService.AddNewStory(Constants.ProjectId, story2);
+            storyService.AddNewStory(Constants.ProjectId, story3);
+            
+            System.Threading.Thread.Sleep(5000);//There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
+            var stories = storyService.GetAllStoriesMatchingFilter(Constants.ProjectId, "type:bug requester:\"pivotaltrackerdotnet\"");
+            Assert.NotNull(stories);
+            Assert.AreEqual(1, stories.Count);
+            Assert.AreEqual(savedStory.Id, stories[0].Id);
+        }
+
+        [Test]
         public void CanRetrieveIceBoxStories()
         {
             var story = new Story
@@ -90,6 +133,7 @@ namespace PivotalTrackerDotNet.Tests
             };
 
             var savedStory = storyService.AddNewStory(Constants.ProjectId, story);
+            System.Threading.Thread.Sleep(5000);//There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
             var stories = storyService.GetIceboxStories(Constants.ProjectId);
             Assert.NotNull(stories);
             Assert.AreEqual(1, stories.Count);
