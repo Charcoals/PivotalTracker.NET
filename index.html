@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Pivotaltracker.net : Pivotal Tracker Rest API wrapper" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Pivotaltracker.net</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/Charcoals/PivotalTracker.NET">View on GitHub</a>
+
+          <h1 id="project_title">Pivotaltracker.net</h1>
+          <h2 id="project_tagline">Pivotal Tracker Rest API wrapper</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/Charcoals/PivotalTracker.NET/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/Charcoals/PivotalTracker.NET/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>PivotalTracker.NET</h1>
+
+<p>PivotalTracker.NET is a wrapper around the <a href="https://www.pivotaltracker.com/help/api">Rest API</a> provided by Pivotal Labs, the makers of <a href="https://www.pivotaltracker.com">Pivotal Track</a>.</p>
+
+<p>With it, developers can retrieve projects, create stories, delete stories, edit stories, add tasks to stories, remove tasks to stories, edit tasks, and add comment to stories.</p>
+
+<h2>Sample Usage</h2>
+
+<h3>Authenticating</h3>
+
+<div class="highlight">
+<pre><span class="n">AuthenticationToken</span> <span class="n">authenticationToken</span> <span class="p">=</span> <span class="n">AuthenticationService</span><span class="p">.</span><span class="n">Authenticate</span><span class="p">(</span><span class="s">"user"</span><span class="p">,</span> <span class="s">"pass"</span><span class="p">);</span>
+</pre>
+</div>
+
+
+<h3>Retrieving All Stories</h3>
+
+<div class="highlight">
+<pre><span class="kt">long</span> <span class="n">projectId</span> <span class="p">=</span> <span class="m">1123</span><span class="p">;</span>
+<span class="kt">var</span>  <span class="n">authenticationToken</span> <span class="p">=</span> <span class="n">AuthenticationService</span><span class="p">.</span><span class="n">Authenticate</span><span class="p">(</span><span class="s">"myUsername"</span><span class="p">,</span> <span class="s">"myPassword"</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">stories</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StoryService</span><span class="p">(</span><span class="n">authenticationToken</span><span class="p">).</span><span class="n">GetAllStories</span><span class="p">(</span><span class="n">projectId</span><span class="p">);</span>
+</pre>
+</div>
+
+
+<h3>Creating a New Story</h3>
+
+<div class="highlight">
+<pre><span class="kt">long</span> <span class="n">projectId</span> <span class="p">=</span> <span class="m">1123</span><span class="p">;</span>
+<span class="kt">var</span> <span class="n">story</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Story</span> <span class="p">{</span>
+                      <span class="n">Name</span> <span class="p">=</span> <span class="s">"Nouvelle histoire"</span><span class="p">,</span>
+                      <span class="n">RequestedBy</span> <span class="p">=</span> <span class="s">"pivotaltrackerdotnet"</span><span class="p">,</span>
+                      <span class="n">StoryType</span> <span class="p">=</span> <span class="n">StoryType</span><span class="p">.</span><span class="n">Feature</span><span class="p">,</span>
+                      <span class="n">Description</span> <span class="p">=</span> <span class="s">"bla bla bla and more bla"</span><span class="p">,</span>
+                      <span class="n">ProjectId</span> <span class="p">=</span> <span class="n">Constants</span><span class="p">.</span><span class="n">ProjectId</span><span class="p">,</span>
+                      <span class="n">Estimate</span> <span class="p">=</span> <span class="m">2</span>
+                    <span class="p">};</span>
+
+<span class="kt">var</span> <span class="n">authenticationToken</span> <span class="p">=</span> <span class="n">AuthenticationService</span><span class="p">.</span><span class="n">Authenticate</span><span class="p">(</span><span class="s">"myUsername"</span><span class="p">,</span> <span class="s">"myPassword"</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">storyService</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StoryService</span><span class="p">(</span><span class="n">authenticationToken</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">savedStory</span> <span class="p">=</span> <span class="n">storyService</span><span class="p">.</span><span class="n">AddNewStory</span><span class="p">(</span><span class="n">projectId</span><span class="p">,</span><span class="n">story</span><span class="p">);</span>
+
+</pre>
+</div>
+
+
+<p>The documentation will <i><b>'soon'</b></i> be available on the project's wiki.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Pivotaltracker.net maintained by <a href="https://github.com/Charcoals">Charcoals</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-28112813-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
