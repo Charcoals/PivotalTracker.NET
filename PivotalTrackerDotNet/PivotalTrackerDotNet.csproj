@@ -53,6 +53,7 @@
     <Compile Include="Domain\Project.cs" />
     <Compile Include="Domain\Story.cs" />
     <Compile Include="Domain\Task.cs" />
+    <Compile Include="FilteringCriteria.cs" />
     <Compile Include="MembershipService.cs" />
     <Compile Include="PivotalTrackerRestEndpoint.cs" />
     <Compile Include="ProjectService.cs" />

@@ -78,7 +78,7 @@ namespace PivotalTrackerDotNet.Tests
         }
 
         [Test]
-        public void CanGetAllStoriesMatchingFilter()
+        public void CanGetAllStoriesMatchingFilter_FreeForm()
         {
             var story1 = new Story
             {
@@ -114,6 +114,48 @@ namespace PivotalTrackerDotNet.Tests
             
             System.Threading.Thread.Sleep(5000);//There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
             var stories = storyService.GetAllStoriesMatchingFilter(Constants.ProjectId, "type:bug requester:\"pivotaltrackerdotnet\"");
+            Assert.NotNull(stories);
+            Assert.AreEqual(1, stories.Count);
+            Assert.AreEqual(savedStory.Id, stories[0].Id);
+        }
+
+        [Test]
+        public void CanGetAllStoriesMatchingFilter_Strict()
+        {
+            var story1 = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedBy = "pivotaltrackerdotnet",
+                StoryType = StoryType.Bug,
+                Description = "some story",
+                ProjectId = Constants.ProjectId
+            };
+
+            var story2 = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedBy = "pivotaltrackerdotnet",
+                StoryType = StoryType.Feature,
+                Description = "another story",
+                ProjectId = Constants.ProjectId
+            };
+
+            var story3 = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedBy = "pivotaltrackerdotnet",
+                StoryType = StoryType.Feature,
+                Description = "yet another story",
+                ProjectId = Constants.ProjectId
+            };
+
+            var savedStory = storyService.AddNewStory(Constants.ProjectId, story1);
+
+            storyService.AddNewStory(Constants.ProjectId, story2);
+            storyService.AddNewStory(Constants.ProjectId, story3);
+
+            System.Threading.Thread.Sleep(5000);//There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
+            var stories = storyService.GetAllStoriesMatchingFilter(Constants.ProjectId, FilteringCriteria.FilterBy.Requester("pivotaltrackerdotnet").Type(StoryType.Bug));
             Assert.NotNull(stories);
             Assert.AreEqual(1, stories.Count);
             Assert.AreEqual(savedStory.Id, stories[0].Id);

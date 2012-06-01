@@ -17,6 +17,7 @@ namespace PivotalTrackerDotNet
         List<Story> GetBacklogStories(int projectId);
         List<Story> GetAllStories(int projectId);
         List<Story> GetAllStoriesMatchingFilter(int projectId, string filter);
+        List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter);
         Story FinishStory(int projectId, int storyId);
         Story StartStory(int projectId, int storyId);
         Story GetStory(int projectId, int storyId);
@@ -37,8 +38,8 @@ namespace PivotalTrackerDotNet
         const string SaveNewTaskEndpoint = "projects/{0}/stories/{1}/tasks?task[description]={2}";
         const string SaveNewCommentEndpoint = "projects/{0}/stories/{1}/notes?note[text]={2}";
         const string SingleTaskEndpoint = "projects/{0}/stories/{1}/tasks/{2}";//projects/$PROJECT_ID/stories/$STORY_ID/tasks/$TASK_ID
-        const string IceBoxEndpoint = "projects/{0}/stories?filter=state:unscheduled";
         const string StoryStateEndpoint = "projects/{0}/stories/{1}?story[current_state]={2}";
+        const string StoryFilterEndpoint = StoriesEndpoint + "?filter={1}";
 
         public StoryService(AuthenticationToken token)
             : base(token)
@@ -56,9 +57,14 @@ namespace PivotalTrackerDotNet
         public List<Story> GetAllStoriesMatchingFilter(int projectId, string filter)
         {
             var request = BuildGetRequest();
-            request.Resource = string.Format(StoriesEndpoint + "?filter=type:bug" , projectId);
+            request.Resource = string.Format(StoryFilterEndpoint, projectId, filter);
 
             return GetStories(projectId, request);
+        }
+
+        public List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter)
+        {
+            return GetAllStoriesMatchingFilter(projectId, filter.ToString());
         }
 
         public Story FinishStory(int projectId, int storyId)
@@ -110,10 +116,7 @@ namespace PivotalTrackerDotNet
 
         public List<Story> GetIceboxStories(int projectId)
         {
-            var request = BuildGetRequest();
-            request.Resource = string.Format(IceBoxEndpoint, projectId);
-
-            return GetStories(projectId, request);
+            return GetAllStoriesMatchingFilter(projectId, "state:unscheduled");
         }
 
         public List<Story> GetBacklogStories(int projectId)
