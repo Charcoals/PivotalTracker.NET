@@ -2,10 +2,10 @@
 <package >
   <metadata>
     <id>PivotalTrackerDotNet</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <authors>Boguste Hameyie, Alexander Ullrich</authors>
     <owners>Boguste Hameyie, Alexander Ullrich</owners>
-    <projectUrl>https://github.com/Charcoals/PivotalTracker.NET</projectUrl>
+    <projectUrl>http://charcoals.github.com/PivotalTracker.NET/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A wrapper for the Pivotal Tracker Rest API</description>
 	<licenseUrl>https://github.com/Charcoals/PivotalTracker.NET/blob/master/LICENSE</licenseUrl>
