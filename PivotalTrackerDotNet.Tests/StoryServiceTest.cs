@@ -111,7 +111,7 @@ namespace PivotalTrackerDotNet.Tests
 
             storyService.AddNewStory(Constants.ProjectId, story2);
             storyService.AddNewStory(Constants.ProjectId, story3);
-            
+
             System.Threading.Thread.Sleep(5000);//There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
             var stories = storyService.GetAllStoriesMatchingFilter(Constants.ProjectId, "type:bug requester:\"pivotaltrackerdotnet\"");
             Assert.NotNull(stories);
@@ -201,16 +201,35 @@ namespace PivotalTrackerDotNet.Tests
             Assert.AreEqual(story.RequestedBy, savedStory.RequestedBy);
             Assert.AreEqual(story.StoryType, savedStory.StoryType);
             Assert.AreEqual(story.Description, savedStory.Description);
-            //Assert.AreEqual(9, savedStory.Estimate);
+            //Assert.AreEqual(9, expected.Estimate);
 
 
             var deletedStory = storyService.RemoveStory(Constants.ProjectId, savedStory.Id);
-            Assert.AreEqual(savedStory.Id, deletedStory.Id);
-            Assert.AreEqual(savedStory.Name, deletedStory.Name);
-            Assert.AreEqual(Constants.ProjectId, deletedStory.ProjectId);
-            Assert.AreEqual(savedStory.RequestedBy, deletedStory.RequestedBy);
-            Assert.AreEqual(savedStory.StoryType, deletedStory.StoryType);
-            Assert.AreEqual(savedStory.Description, deletedStory.Description);
+            VerifyStory(savedStory, deletedStory);
+        }
+
+        [Test]
+        public void CanUpdateStory()
+        {
+            var story = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedBy = "pivotaltrackerdotnet",
+                StoryType = StoryType.Feature,
+                Description = "bla bla bla and more bla",
+                ProjectId = Constants.ProjectId,
+                Estimate = 9
+            };
+
+            var savedStory = storyService.AddNewStory(Constants.ProjectId, story);
+            savedStory.Name = "Call be New name";
+            savedStory.Description ="wololo";
+            savedStory.Estimate = 1;
+            savedStory.Labels = "laby hh,pool";
+
+
+            var updatedStory = storyService.UpdateStory(Constants.ProjectId, savedStory);
+            VerifyStory(savedStory, updatedStory);
         }
 
         [Test]
@@ -230,8 +249,8 @@ namespace PivotalTrackerDotNet.Tests
 
 
             var task = storyService.AddNewTask(new Task { Description = "stuff stuff stuff", ParentStoryId = savedStory.Id, ProjectId = Constants.ProjectId });
-           
-            
+
+
             var guid = Guid.NewGuid().ToString();
 
             task.Description = guid;
@@ -268,5 +287,19 @@ namespace PivotalTrackerDotNet.Tests
             Assert.IsTrue(storyService.RemoveTask(retrievedTask.ProjectId, task.ParentStoryId, retrievedTask.Id));
 
         }
+
+
+        private static void VerifyStory(Story expected, Story actual)
+        {
+            Assert.AreEqual(expected.Id, actual.Id);
+            Assert.AreEqual(expected.Name, actual.Name);
+            Assert.AreEqual(Constants.ProjectId, actual.ProjectId);
+            Assert.AreEqual(expected.RequestedBy, actual.RequestedBy);
+            Assert.AreEqual(expected.StoryType, actual.StoryType);
+            Assert.AreEqual(expected.Description, actual.Description);
+            Assert.AreEqual(expected.Estimate, actual.Estimate);
+            Assert.AreEqual(expected.Labels, actual.Labels);
+        }
+
     }
 }

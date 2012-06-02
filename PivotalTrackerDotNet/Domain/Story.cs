@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -14,6 +15,7 @@ namespace PivotalTrackerDotNet.Domain {
         public StoryStatus CurrentState { get; set; }
         public string Description { get; set; }
         public string Name { get; set; }
+        public string Labels { get; set; }
         public string RequestedBy { get; set; }
         public List<Note> Notes { get; set; }
         public List<Task> Tasks { get; set; }
@@ -28,6 +30,58 @@ namespace PivotalTrackerDotNet.Domain {
                                 //new XElement("estimate", Estimate),
                                 new XElement("requested_by", RequestedBy))
                     .ToString(SaveOptions.DisableFormatting);
+        }
+
+        public string GenerateXmlDiff(Story story)
+        {
+            return Id != story.Id ? string.Empty : new XElement("story", BuildDiffs(story)).ToString(SaveOptions.DisableFormatting);
+        }
+
+        private IEnumerable<XElement> BuildDiffs(Story story)
+        {
+            var diffs = new List<XElement>();
+            if (story.RequestedBy != RequestedBy)
+            {
+                diffs.Add(new XElement("requested_by", story.RequestedBy));
+            }
+
+            if (story.Labels != Labels)
+            {
+                diffs.Add(new XElement("labels", story.Labels));
+            }
+
+            if (story.Description != Name)
+            {
+                diffs.Add(new XElement("name", story.Name));
+            }
+
+            if (story.Description != Description)
+            {
+                diffs.Add(new XElement("description", story.Description));
+            }
+
+            if (story.CurrentState != CurrentState)
+            {
+                diffs.Add(new XElement("current_state", story.CurrentState.ToString().ToLower()));
+            }
+
+            if(story.Estimate != Estimate)
+            {
+                diffs.Add(new XElement("estimate", story.Estimate.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            if (story.StoryType != this.StoryType)
+            {
+                diffs.Add(new XElement("story_type", story.StoryType.ToString().ToLower()));
+            }
+
+            if (story.ProjectId != this.ProjectId)
+            {
+                diffs.Add(new XElement("project_id", story.ProjectId));
+            }
+
+
+            return diffs;
         }
     }
 

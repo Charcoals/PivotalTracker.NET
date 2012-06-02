@@ -22,6 +22,7 @@ namespace PivotalTrackerDotNet
         Story StartStory(int projectId, int storyId);
         Story GetStory(int projectId, int storyId);
         Story RemoveStory(int projectId, int storyId);
+        Story UpdateStory(int projectId, Story story);
         Task GetTask(int projectId, int storyId, int taskId);
         bool RemoveTask(int projectId, int storyId, int taskId);
         void SaveTask(Task task);
@@ -94,11 +95,7 @@ namespace PivotalTrackerDotNet
 
         public Story GetStory(int projectId, int storyId)
         {
-            var request = BuildGetRequest();
-            request.Resource = string.Format(SingleStoryEndpoint, projectId, storyId);
-
-            var response = RestClient.Execute<Story>(request);
-            var story = response.Data;
+            var story = FindStory(projectId, storyId);
 
             return GetStoryWithTasks(projectId, story);
         }
@@ -142,9 +139,19 @@ namespace PivotalTrackerDotNet
             request.AddParameter("application/xml", toBeSaved.ToXml(), ParameterType.RequestBody);
 
             var response = RestClient.Execute<Story>(request);
-            var story = response.Data;
+            return response.Data;
+        }
 
-            return story;
+        public Story UpdateStory(int projectId, Story story)
+        {
+            var toBeUpdated = FindStory(projectId, story.Id);
+
+            var request = BuildPutRequest();
+            request.Resource = string.Format(SingleStoryEndpoint, projectId, story.Id);
+            request.AddParameter("application/xml", toBeUpdated.GenerateXmlDiff(story), ParameterType.RequestBody);
+
+            var response = RestClient.Execute<Story>(request);
+            return response.Data;
         }
 
         public void SaveTask(Task task)
@@ -205,6 +212,16 @@ namespace PivotalTrackerDotNet
             RestClient.Execute(request);
         }
 
+        Story FindStory(int projectId, int storyId)
+        {
+            var request = BuildGetRequest();
+            request.Resource = string.Format(SingleStoryEndpoint, projectId, storyId);
+
+            var response = RestClient.Execute<Story>(request);
+            var story = response.Data;
+            return story;
+        }
+
         List<Story> GetStoriesByIterationType(int projectId, string iterationType)
         {
             var request = BuildGetRequest();
@@ -213,7 +230,7 @@ namespace PivotalTrackerDotNet
             return GetStories(projectId, request);
         }
 
-        private List<Story> GetStories(int projectId, RestRequest request)
+        List<Story> GetStories(int projectId, RestRequest request)
         {
             var response = RestClient.Execute<List<Story>>(request);
             var stories = response.Data ?? new List<Story>();
