@@ -150,12 +150,14 @@ namespace PivotalTrackerDotNet.Tests
             };
 
             var savedStory = storyService.AddNewStory(Constants.ProjectId, story1);
+            savedStory.Labels = "5.1.30, plume";
+            savedStory = storyService.UpdateStory(Constants.ProjectId, savedStory);
 
             storyService.AddNewStory(Constants.ProjectId, story2);
             storyService.AddNewStory(Constants.ProjectId, story3);
 
             System.Threading.Thread.Sleep(5000);//There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
-            var stories = storyService.GetAllStoriesMatchingFilter(Constants.ProjectId, FilteringCriteria.FilterBy.Requester("pivotaltrackerdotnet").Type(StoryType.Bug));
+            var stories = storyService.GetAllStoriesMatchingFilter(Constants.ProjectId, FilteringCriteria.FilterBy.Label("5.1.30").Type(StoryType.Bug));
             Assert.NotNull(stories);
             Assert.AreEqual(1, stories.Count);
             Assert.AreEqual(savedStory.Id, stories[0].Id);
