@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace PivotalTrackerDotNet.Domain {
-    
     public class Story {
         public int Id { get; set; }
         public int ProjectId { get; set; }

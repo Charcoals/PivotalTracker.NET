@@ -11,12 +11,16 @@ namespace PivotalTrackerDotNet
     {
         Story AddNewStory(int projectId, Story toBeSaved);
         Task AddNewTask(Task task);
+        List<Iteration> GetAllIterations(int projectId);
+        List<Iteration> GetCurrentIterations(int projectId);
+        List<Iteration> GetDoneIterations(int projectId);
+        List<Iteration> GetBacklogIterations(int projectId);
         List<Story> GetCurrentStories(int projectId);
         List<Story> GetDoneStories(int projectId);
         List<Story> GetIceboxStories(int projectId);
         List<Story> GetBacklogStories(int projectId);
         List<Story> GetAllStories(int projectId);
-        List<Story> GetAllStories(int projectId,int limit, int offset);
+        List<Story> GetAllStories(int projectId, int limit, int offset);
         List<Story> GetAllStoriesMatchingFilter(int projectId, string filter);
         List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter);
         Story FinishStory(int projectId, int storyId);
@@ -33,7 +37,7 @@ namespace PivotalTrackerDotNet
 
     public class StoryService : AAuthenticatedService, IStoryService
     {
-        const string StoryIterationEndpoint = "projects/{0}/iterations/{1}";
+        const string IterationEndpoint = "projects/{0}/iterations/{1}";
         const string SingleStoryEndpoint = "projects/{0}/stories/{1}";
         const string StoriesEndpoint = "projects/{0}/stories";
         const string TaskEndpoint = "projects/{0}/stories/{1}/tasks";
@@ -43,6 +47,7 @@ namespace PivotalTrackerDotNet
         const string StoryStateEndpoint = "projects/{0}/stories/{1}?story[current_state]={2}";
         const string StoryFilterEndpoint = StoriesEndpoint + "?filter={1}";
         const string StoryPaginationEndpoint = StoriesEndpoint + "?limit={1}&offset={2}";
+        const string IterationPagingEndPoint = "projects/{0}/iterations";
 
         public StoryService(AuthenticationToken token)
             : base(token)
@@ -60,9 +65,19 @@ namespace PivotalTrackerDotNet
         public List<Story> GetAllStories(int projectId, int limit, int offset)
         {
             var request = BuildGetRequest();
-            request.Resource = string.Format(StoryPaginationEndpoint, projectId,limit,offset);
+            request.Resource = string.Format(StoryPaginationEndpoint, projectId, limit, offset);
 
             return GetStories(projectId, request);
+        }
+
+
+        public List<Iteration> GetAllIterations(int projectId)
+        {
+            var request = BuildGetRequest();
+            request.Resource = string.Format(IterationPagingEndPoint, projectId);
+
+            var response = RestClient.Execute<List<Iteration>>(request);
+            return response.Data ?? new List<Iteration>();
         }
 
         public List<Story> GetAllStoriesMatchingFilter(int projectId, string filter)
@@ -108,6 +123,21 @@ namespace PivotalTrackerDotNet
             var story = FindStory(projectId, storyId);
 
             return GetStoryWithTasks(projectId, story);
+        }
+
+        public List<Iteration> GetCurrentIterations(int projectId)
+        {
+            return GetIterationsByType(projectId, "current");
+        }
+
+        public List<Iteration> GetDoneIterations(int projectId)
+        {
+            return GetIterationsByType(projectId, "done");
+        }
+
+        public List<Iteration> GetBacklogIterations(int projectId)
+        {
+            return GetIterationsByType(projectId, "backlog");
         }
 
         public List<Story> GetCurrentStories(int projectId)
@@ -232,10 +262,18 @@ namespace PivotalTrackerDotNet
             return story;
         }
 
+        List<Iteration> GetIterationsByType(int projectId, string iterationType)
+        {
+            var request = BuildGetRequest();
+            request.Resource = string.Format(IterationEndpoint, projectId, iterationType);
+            var response = RestClient.Execute<List<Iteration>>(request);
+            return response.Data ?? new List<Iteration>();
+        }
+
         List<Story> GetStoriesByIterationType(int projectId, string iterationType)
         {
             var request = BuildGetRequest();
-            request.Resource = string.Format(StoryIterationEndpoint, projectId, iterationType);
+            request.Resource = string.Format(IterationEndpoint, projectId, iterationType);
 
             return GetStories(projectId, request);
         }

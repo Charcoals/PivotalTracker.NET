@@ -48,6 +48,7 @@
     <Compile Include="AuthenticationService.cs" />
     <Compile Include="Domain\Activity.cs" />
     <Compile Include="Domain\AuthenticationToken.cs" />
+    <Compile Include="Domain\Iteration.cs" />
     <Compile Include="Domain\Membership.cs" />
     <Compile Include="Domain\Note.cs" />
     <Compile Include="Domain\Person.cs" />
