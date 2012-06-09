@@ -19,6 +19,23 @@ namespace PivotalTrackerDotNet.Domain {
         public string RequestedBy { get; set; }
         public List<Note> Notes { get; set; }
         public List<Task> Tasks { get; set; }
+        public string CreatedAt { get; set; }
+        public string AcceptedAt { get; set; }
+
+        public DateTime? CreatedOn
+        {
+            get { return ConvertUtcDateTime(CreatedAt); }
+        }
+
+        public DateTime? AcceptedOn
+        {
+            get { return ConvertUtcDateTime(AcceptedAt); }
+        }
+
+        static DateTime? ConvertUtcDateTime(string date)
+        {
+            return !string.IsNullOrWhiteSpace(date) ? (DateTime?)DateTime.Parse(date.Replace(" UTC", "Z")) : null;
+        }
 
         public string ToXml()
         {
