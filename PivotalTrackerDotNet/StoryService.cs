@@ -16,6 +16,7 @@ namespace PivotalTrackerDotNet
         List<Story> GetIceboxStories(int projectId);
         List<Story> GetBacklogStories(int projectId);
         List<Story> GetAllStories(int projectId);
+        List<Story> GetAllStories(int projectId,int limit, int offset);
         List<Story> GetAllStoriesMatchingFilter(int projectId, string filter);
         List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter);
         Story FinishStory(int projectId, int storyId);
@@ -41,6 +42,7 @@ namespace PivotalTrackerDotNet
         const string SingleTaskEndpoint = "projects/{0}/stories/{1}/tasks/{2}";//projects/$PROJECT_ID/stories/$STORY_ID/tasks/$TASK_ID
         const string StoryStateEndpoint = "projects/{0}/stories/{1}?story[current_state]={2}";
         const string StoryFilterEndpoint = StoriesEndpoint + "?filter={1}";
+        const string StoryPaginationEndpoint = StoriesEndpoint + "?limit={1}&offset={2}";
 
         public StoryService(AuthenticationToken token)
             : base(token)
@@ -51,6 +53,14 @@ namespace PivotalTrackerDotNet
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(StoriesEndpoint, projectId);
+
+            return GetStories(projectId, request);
+        }
+
+        public List<Story> GetAllStories(int projectId, int limit, int offset)
+        {
+            var request = BuildGetRequest();
+            request.Resource = string.Format(StoryPaginationEndpoint, projectId,limit,offset);
 
             return GetStories(projectId, request);
         }

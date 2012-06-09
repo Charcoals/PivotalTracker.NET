@@ -77,6 +77,40 @@ namespace PivotalTrackerDotNet.Tests
             Assert.AreEqual(savedStory.Id, stories[0].Id);
         }
 
+        [Test, Ignore("The code works, but the lag from pivotal is such that it requires to sleep for close to a minute to pass")]
+        public void CanRetrieveAllStories_Paging()
+        {
+            var story = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedBy = "pivotaltrackerdotnet",
+                StoryType = StoryType.Feature,
+                Description = "bla bla bla and more bla",
+                ProjectId = Constants.ProjectId
+            };
+
+            var story2 = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedBy = "pivotaltrackerdotnet",
+                StoryType = StoryType.Bug,
+                Description = "bla bla bla and more bla",
+                ProjectId = Constants.ProjectId
+            };
+
+            storyService.AddNewStory(Constants.ProjectId, story);
+            storyService.AddNewStory(Constants.ProjectId, story2);
+            System.Threading.Thread.Sleep(30000);//There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
+
+            var stories = storyService.GetAllStories(Constants.ProjectId,2,0);
+            Assert.NotNull(stories);
+            Assert.AreEqual(2, stories.Count);
+
+            stories = storyService.GetAllStories(Constants.ProjectId, 1, 1);
+            Assert.NotNull(stories);
+            Assert.AreEqual(1, stories.Count);
+        }
+
         [Test]
         public void CanGetAllStoriesMatchingFilter_FreeForm()
         {
