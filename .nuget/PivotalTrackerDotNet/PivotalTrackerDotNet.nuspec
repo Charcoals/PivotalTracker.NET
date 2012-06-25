@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>PivotalTrackerDotNet</id>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <authors>Boguste Hameyie, Alex Ullrich</authors>
     <owners>Boguste Hameyie, Alex Ullrich</owners>
     <projectUrl>http://charcoals.github.com/PivotalTracker.NET/</projectUrl>
