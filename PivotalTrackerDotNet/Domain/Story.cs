@@ -21,17 +21,12 @@ namespace PivotalTrackerDotNet.Domain {
 
         public DateTime? CreatedOn
         {
-            get { return ConvertUtcDateTime(CreatedAt); }
+            get { return CreatedAt.ConvertToUtc(); }
         }
 
         public DateTime? AcceptedOn
         {
-            get { return ConvertUtcDateTime(AcceptedAt); }
-        }
-
-        static DateTime? ConvertUtcDateTime(string date)
-        {
-            return !string.IsNullOrWhiteSpace(date) ? (DateTime?)DateTime.Parse(date.Replace(" UTC", "Z")) : null;
+            get { return AcceptedAt.ConvertToUtc(); }
         }
 
         public string ToXml()

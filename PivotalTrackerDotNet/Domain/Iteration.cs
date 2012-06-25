@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace PivotalTrackerDotNet.Domain
@@ -10,5 +11,15 @@ namespace PivotalTrackerDotNet.Domain
         public string Finish { get; set; }
         public float TeamStrength { get; set; }
         public List<Story> Stories { get; set; }
+
+        public DateTime? StartDate
+        {
+            get { return Start.ConvertToUtc(); }
+        }
+
+        public DateTime? FinishDate
+        {
+            get { return Finish.ConvertToUtc(); }
+        }
     }
 }
