@@ -20,9 +20,9 @@ namespace PivotalTrackerDotNet
         List<Story> GetDoneStories(int projectId);
         List<Story> GetIceboxStories(int projectId);
         List<Story> GetBacklogStories(int projectId);
-        List<Story> GetAllStories(int projectId);
-        List<Story> GetAllStories(int projectId, int limit, int offset);
-        List<Story> GetAllStoriesMatchingFilter(int projectId, string filter);
+        List<Story> GetAllStories(int projectId, bool addTask = true);
+        List<Story> GetAllStories(int projectId, int limit, int offset, bool addTask = true);
+        List<Story> GetAllStoriesMatchingFilter(int projectId, string filter, bool addTask = true);
         List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter);
 
         Story AddNewStory(int projectId, Story toBeSaved);
@@ -62,28 +62,28 @@ namespace PivotalTrackerDotNet
         {
         }
 
-        public List<Story> GetAllStories(int projectId)
+        public List<Story> GetAllStories(int projectId, bool addTask = true)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(StoriesEndpoint, projectId);
 
-            return GetStories(projectId, request);
+            return GetStories(projectId, request, addTask);
         }
 
-        public List<Story> GetAllStories(int projectId, int limit, int offset)
+        public List<Story> GetAllStories(int projectId, int limit, int offset, bool addTask = true)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(StoryPaginationEndpoint, projectId, limit, offset);
 
-            return GetStories(projectId, request);
+            return GetStories(projectId, request, addTask);
         }
 
-        public List<Story> GetAllStoriesMatchingFilter(int projectId, string filter)
+        public List<Story> GetAllStoriesMatchingFilter(int projectId, string filter, bool addTask = true)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(StoryFilterEndpoint, projectId, filter);
 
-            return GetStories(projectId, request);
+            return GetStories(projectId, request, addTask);
         }
 
         public List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter)
@@ -295,21 +295,24 @@ namespace PivotalTrackerDotNet
             return response.Data ?? new List<Iteration>();
         }
 
-        List<Story> GetStoriesByIterationType(int projectId, string iterationType)
+        List<Story> GetStoriesByIterationType(int projectId, string iterationType, bool addTask = true)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(SpecifiedIterationEndpoint, projectId, iterationType);
 
-            return GetStories(projectId, request);
+            return GetStories(projectId, request, addTask);
         }
 
-        List<Story> GetStories(int projectId, RestRequest request)
+        List<Story> GetStories(int projectId, RestRequest request, bool addTask)
         {
-            var response = RestClient.Execute<List<Story>>(request);
+            var response = RestClient.Get<List<Story>>(request);
             var stories = response.Data ?? new List<Story>();
-            foreach (var story in stories)
+            if (addTask)
             {
-                GetStoryWithTasks(projectId, story);
+                foreach (var story in stories)
+                {
+                    GetStoryWithTasks(projectId, story);
+                }
             }
             return stories;
         }

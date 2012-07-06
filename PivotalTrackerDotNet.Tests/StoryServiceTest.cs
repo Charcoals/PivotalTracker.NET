@@ -4,7 +4,6 @@ using NUnit.Framework;
 
 namespace PivotalTrackerDotNet.Tests
 {
-
     [TestFixture]
     public class StoryServiceTest
     {
@@ -102,7 +101,7 @@ namespace PivotalTrackerDotNet.Tests
             storyService.AddNewStory(Constants.ProjectId, story2);
             System.Threading.Thread.Sleep(30000);//There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
 
-            var stories = storyService.GetAllStories(Constants.ProjectId,2,0);
+            var stories = storyService.GetAllStories(Constants.ProjectId, 2, 0);
             Assert.NotNull(stories);
             Assert.AreEqual(2, stories.Count);
 
@@ -259,7 +258,7 @@ namespace PivotalTrackerDotNet.Tests
 
             var savedStory = storyService.AddNewStory(Constants.ProjectId, story);
             savedStory.Name = "Call be New name";
-            savedStory.Description ="wololo";
+            savedStory.Description = "wololo";
             savedStory.Estimate = 1;
             savedStory.Labels = "laby hh,pool";
 
@@ -338,4 +337,25 @@ namespace PivotalTrackerDotNet.Tests
         }
 
     }
+
+    [TestFixture]
+    public class StoryServiceLargeProjectTest
+    {
+        private StoryService storyService;
+        private const int projectId = 456295;
+        [TestFixtureSetUp]
+        public void TestFixtureSetUp()
+        {
+            storyService = new StoryService(AuthenticationService.Authenticate(Constants.Username, Constants.Password));
+        }
+
+        [Test]
+        public void CanRetrieveAllStories()
+        {
+            var stories = storyService.GetAllStories(projectId);
+            Assert.NotNull(stories);
+            Assert.GreaterOrEqual(stories.Count, 150);
+        }
+    }
+
 }

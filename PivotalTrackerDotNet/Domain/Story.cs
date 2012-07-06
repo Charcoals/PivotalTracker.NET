@@ -95,7 +95,7 @@ namespace PivotalTrackerDotNet.Domain {
     }
 
     public enum StoryStatus { UnScheduled, UnStarted, Started, Finished, Delivered, Accepted, Rejected }
-    public enum StoryType { Bug, Chore, Feature }
+    public enum StoryType { Bug, Chore, Feature, Release }
     //  <story>
     //  <id type="integer">$STORY_ID</id>
     //  <project_id type="integer">$PROJECT_ID</project_id>
