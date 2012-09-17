@@ -138,7 +138,7 @@ namespace PivotalTrackerDotNet
             var iterations =new List<Iteration>();
             var serializer = new RestSharpXmlDeserializer();
             var el = XElement.Parse(response.Content);
-            iterations.AddRange(el.Elements("iteration").Select(storey => serializer.Deserialize<Iteration>(storey.ToString())));
+            iterations.AddRange(el.Elements("iteration").Select(iteration => serializer.Deserialize<Iteration>(iteration.ToString())));
             return iterations;
         }
 

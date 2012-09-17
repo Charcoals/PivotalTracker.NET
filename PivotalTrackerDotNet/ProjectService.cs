@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 using PivotalTrackerDotNet.Domain;
 
 namespace PivotalTrackerDotNet {
@@ -33,8 +34,12 @@ namespace PivotalTrackerDotNet {
             var request = BuildGetRequest();
             request.Resource = ProjectsEndpoint;
 
-            var response = RestClient.Execute<List<Project>>(request);
-            return response.Data;
+            var response = RestClient.Execute(request);
+            var projects = new List<Project>();
+            var serializer = new RestSharpXmlDeserializer();
+            var el = XElement.Parse(response.Content);
+            projects.AddRange(el.Elements("project").Select(project => serializer.Deserialize<Project>(project.ToString())));
+            return projects;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
 using PivotalTrackerDotNet.Domain;
 
 namespace PivotalTrackerDotNet {
@@ -16,8 +18,12 @@ namespace PivotalTrackerDotNet {
 		public List<Person> GetMembers(int projectId) {
 			var request = BuildGetRequest();
 			request.Resource = string.Format(MemberShipEndpoint, projectId);
-			var response = RestClient.Execute<List<Person>>(request);
-			return response.Data;
+			var response = RestClient.Execute(request);
+		    var persons = new List<Person>();
+            var serializer = new RestSharpXmlDeserializer();
+            var el = XElement.Parse(response.Content);
+            persons.AddRange(el.Elements("membership").Select(person => serializer.Deserialize<Person>(person.ToString())));
+		    return persons;
 		}
 	}
 }
