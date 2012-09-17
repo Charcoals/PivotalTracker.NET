@@ -27,12 +27,12 @@ namespace PivotalTrackerDotNet.Domain {
 
         public DateTime? CreatedOn
         {
-            get { return CreatedAt.ConvertToUtc(); }
+            get { return CreatedAt.ConvertTime(); }
         }
 
         public DateTime? AcceptedOn
         {
-            get { return AcceptedAt.ConvertToUtc(); }
+            get { return AcceptedAt.ConvertTime(); }
         }
 
         public string ToXml()

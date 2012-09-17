@@ -14,12 +14,12 @@ namespace PivotalTrackerDotNet.Domain
 
         public DateTime? StartDate
         {
-            get { return Start.ConvertToUtc(); }
+            get { return Start.ConvertTime(); }
         }
 
         public DateTime? FinishDate
         {
-            get { return Finish.ConvertToUtc(); }
+            get { return Finish.ConvertTime(); }
         }
     }
 }

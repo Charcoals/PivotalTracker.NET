@@ -206,12 +206,13 @@ namespace PivotalTrackerDotNet.Tests
                 StoryType = StoryType.Feature,
                 Description = "bla bla bla and more bla",
                 ProjectId = Constants.ProjectId,
-
+                CurrentState = StoryStatus.Delivered,
+                Estimate = 4
             };
 
             var savedStory = storyService.AddNewStory(Constants.ProjectId, story);
             System.Threading.Thread.Sleep(5000);//There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
-            var stories = storyService.GetIceboxStories(Constants.ProjectId);
+            var stories = storyService.GetCurrentStories(Constants.ProjectId);
             Assert.NotNull(stories);
             Assert.AreEqual(1, stories.Count);
             Assert.AreEqual(savedStory.Id, stories[0].Id);
@@ -352,7 +353,7 @@ namespace PivotalTrackerDotNet.Tests
         [Test]
         public void CanRetrieveAllStories()
         {
-            var stories = storyService.GetAllStories(projectId);
+            var stories = storyService.GetCurrentStories(projectId);
             Assert.NotNull(stories);
             Assert.GreaterOrEqual(stories.Count, 150);
         }

@@ -2,14 +2,14 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>PivotalTrackerDotNet</id>
-        <version>1.0.7</version>
+        <version>1.0.8</version>
         <authors>Boguste Hameyie,Alex Ullrich</authors>
         <owners>Boguste Hameyie,Alex Ullrich</owners>
         <licenseUrl>https://github.com/Charcoals/PivotalTracker.NET/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/Charcoals/PivotalTracker.NET</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>A wrapper for the Pivotal Tracker Rest API</description>
-        <releaseNotes>Fixed bug preventing retrieval of membership and projects. For issue tracking, please use https://github.com/Charcoals/PivotalTracker.NET/issues?state=open</releaseNotes>
+        <releaseNotes>Fixed bug preventing retrieval of stories based on iteration type. For issue tracking, please use https://github.com/Charcoals/PivotalTracker.NET/issues?state=open</releaseNotes>
         <copyright>Charcoals 2012 and contributors</copyright>
         <language>en-US</language>
         <tags>Pivotal Tracker</tags>

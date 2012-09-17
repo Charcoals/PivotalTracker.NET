@@ -305,8 +305,13 @@ namespace PivotalTrackerDotNet
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(SpecifiedIterationEndpoint, projectId, iterationType);
-
-            return GetStories(request);
+            var response = RestClient.Execute(request);
+            
+            var stories = new Stories();
+            var serializer = new RestSharpXmlDeserializer();
+            var el = XElement.Parse(response.Content);
+            stories.AddRange(el.Descendants("story").Select(storey => serializer.Deserialize<Story>(storey.ToString())));
+            return stories;
         }
 
         List<Story> GetStories(RestRequest request)
