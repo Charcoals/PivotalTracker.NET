@@ -4,6 +4,12 @@ using System.Globalization;
 using System.Xml.Linq;
 
 namespace PivotalTrackerDotNet.Domain {
+
+    public class Stories:List<Story>
+    {
+        
+    }
+
     public class Story {
         public int Id { get; set; }
         public int ProjectId { get; set; }

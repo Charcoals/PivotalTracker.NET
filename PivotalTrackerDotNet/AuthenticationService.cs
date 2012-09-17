@@ -13,7 +13,7 @@ namespace PivotalTrackerDotNet
         public static AuthenticationToken Authenticate(string username, string password)
         {
             var client = new RestClient();
-            client.BaseUrl = PivotalTrackerRestEndpoint.ENDPOINT;
+            client.BaseUrl = PivotalTrackerRestEndpoint.SSLENDPOINT;
             client.Authenticator = new HttpBasicAuthenticator(username, password);
 
             var request = new RestRequest();

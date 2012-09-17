@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
 using PivotalTrackerDotNet.Domain;
 using RestSharp;
 using RestSharp.Contrib;
+using RestSharp.Deserializers;
 using Parallel = System.Threading.Tasks.Parallel;
 
 namespace PivotalTrackerDotNet
@@ -67,7 +70,7 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(StoriesEndpoint, projectId);
 
-            return GetStories(projectId, request, addTask);
+            return GetStories(request);
         }
 
         public List<Story> GetAllStories(int projectId, int limit, int offset, bool addTask = true)
@@ -75,7 +78,7 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(StoryPaginationEndpoint, projectId, limit, offset);
 
-            return GetStories(projectId, request, addTask);
+            return GetStories(request);
         }
 
         public List<Story> GetAllStoriesMatchingFilter(int projectId, string filter, bool addTask = true)
@@ -83,7 +86,7 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(StoryFilterEndpoint, projectId, filter);
 
-            return GetStories(projectId, request, addTask);
+            return GetStories(request);
         }
 
         public List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter)
@@ -118,9 +121,7 @@ namespace PivotalTrackerDotNet
 
         public Story GetStory(int projectId, int storyId)
         {
-            var story = FindStory(projectId, storyId);
-
-            return GetStoryWithTasks(projectId, story);
+            return FindStory(projectId, storyId);
         }
 
         public List<Iteration> GetAllIterations(int projectId)
@@ -128,8 +129,17 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(IterationEndPoint, projectId);
 
-            var response = RestClient.Execute<List<Iteration>>(request);
-            return response.Data ?? new List<Iteration>();
+            return GetIteration(request);
+        }
+
+        private List<Iteration> GetIteration(RestRequest request)
+        {
+            var response = RestClient.Execute(request);
+            var iterations =new List<Iteration>();
+            var serializer = new RestSharpXmlDeserializer();
+            var el = XElement.Parse(response.Content);
+            iterations.AddRange(el.Elements("iteration").Select(storey => serializer.Deserialize<Iteration>(storey.ToString())));
+            return iterations;
         }
 
         public List<Iteration> GetAllIterations(int projectId, int limit, int offset)
@@ -137,17 +147,14 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(IterationPaginationEndPoint, projectId,offset,limit);
 
-            var response = RestClient.Execute<List<Iteration>>(request);
-            return response.Data ?? new List<Iteration>();
+            return GetIteration(request);
         }
 
         public List<Iteration> GetLastIterations(long projectId, int number)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(IterationRecentEndPoint, projectId, number);
-
-            var response = RestClient.Execute<List<Iteration>>(request);
-            return response.Data ?? new List<Iteration>();
+            return GetIteration(request);
         }
 
         public List<Iteration> GetCurrentIterations(int projectId)
@@ -291,47 +298,26 @@ namespace PivotalTrackerDotNet
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(SpecifiedIterationEndpoint, projectId, iterationType);
-            var response = RestClient.Execute<List<Iteration>>(request);
-            return response.Data ?? new List<Iteration>();
+            return GetIteration(request);
         }
 
-        List<Story> GetStoriesByIterationType(int projectId, string iterationType, bool addTask = true)
+        List<Story> GetStoriesByIterationType(int projectId, string iterationType)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(SpecifiedIterationEndpoint, projectId, iterationType);
 
-            return GetStories(projectId, request, addTask);
+            return GetStories(request);
         }
 
-        List<Story> GetStories(int projectId, RestRequest request, bool addTask)
+        List<Story> GetStories(RestRequest request)
         {
-            var response = RestClient.Get<List<Story>>(request);
-            var stories = response.Data ?? new List<Story>();
-            if (addTask)
-            {
-                foreach (var story in stories)
-                {
-                    GetStoryWithTasks(projectId, story);
-                }
-            }
+            var response = RestClient.Execute(request);
+            
+            var stories = new Stories();
+            var serializer = new RestSharpXmlDeserializer();
+            var el = XElement.Parse(response.Content);
+            stories.AddRange(el.Elements("story").Select(storey => serializer.Deserialize<Story>(storey.ToString())));
             return stories;
-        }
-
-        Story GetStoryWithTasks(int projectId, Story story)
-        {
-            var request = BuildGetRequest();
-            request.Resource = string.Format(TaskEndpoint, projectId, story.Id);
-            var taskResponse = RestClient.Execute<List<Task>>(request);
-            story.Tasks = taskResponse.Data;
-            if (story.Tasks != null)
-            {
-                story.Tasks.ForEach(e =>
-                {
-                    e.ParentStoryId = story.Id;
-                    e.ProjectId = projectId;
-                });
-            }
-            return story;
         }
     }
 }
