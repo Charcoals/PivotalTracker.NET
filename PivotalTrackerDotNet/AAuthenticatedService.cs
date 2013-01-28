@@ -1,4 +1,7 @@
-﻿using PivotalTrackerDotNet.Domain;
+﻿using System;
+using System.Xml.Linq;
+using Newtonsoft.Json.Linq;
+using PivotalTrackerDotNet.Domain;
 using RestSharp;
 
 namespace PivotalTrackerDotNet
@@ -48,6 +51,17 @@ namespace PivotalTrackerDotNet
             request.AddHeader("X-TrackerToken", m_token.Guid.ToString("N"));
             request.RequestFormat = DataFormat.Xml;
             return request;
+        }
+
+        protected static XElement ParseContent(IRestResponse response) {
+            if (response.Content.StartsWith("{")) {
+                var jObject = JObject.Parse(response.Content);
+                if (jObject.Property("error_message") != null) {
+                    throw new Exception(jObject.Property("error_message").Value.ToString());
+                }
+            }
+            var el = XElement.Parse(response.Content);
+            return el;
         }
     }
 }
