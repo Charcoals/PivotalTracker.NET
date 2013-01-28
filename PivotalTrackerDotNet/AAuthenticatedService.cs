@@ -7,11 +7,15 @@ namespace PivotalTrackerDotNet
     {
         protected readonly AuthenticationToken m_token;
         protected RestClient RestClient;
-        protected AAuthenticatedService(AuthenticationToken token)
+        protected AAuthenticatedService(AuthenticationToken token, bool needsSSL = false)
         {
             m_token = token;
             RestClient = new RestClient();
-            RestClient.BaseUrl = PivotalTrackerRestEndpoint.ENDPOINT;
+            if (needsSSL) {
+                RestClient.BaseUrl = PivotalTrackerRestEndpoint.SSLENDPOINT;
+            } else {
+                RestClient.BaseUrl = PivotalTrackerRestEndpoint.ENDPOINT;
+            }
         }
 
         protected RestRequest BuildGetRequest()
