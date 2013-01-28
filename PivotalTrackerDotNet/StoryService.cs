@@ -60,8 +60,8 @@ namespace PivotalTrackerDotNet
         const string IterationPaginationEndPoint = IterationEndPoint+"?offset={1}&limit={2}";
         const string IterationRecentEndPoint = IterationEndPoint + "/done?offset=-{1}";
 
-        public StoryService(AuthenticationToken token)
-            : base(token)
+        public StoryService(AuthenticationToken token, bool needsSSL = false)
+            : base(token, needsSSL)
         {
         }
 
