@@ -13,6 +13,7 @@ namespace PivotalTrackerDotNet.Domain {
         public string VelocityScheme { get; set; }
         public int CurrentVelocity { get; set; }
         public string LastActivityAt { get; set; }
+        public bool UseHTTPS { get; set; }
         //        <project>
         //  <id>1</id>
         //  <name>Sample Project</name>

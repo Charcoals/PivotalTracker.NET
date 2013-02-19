@@ -60,8 +60,8 @@ namespace PivotalTrackerDotNet
         const string IterationPaginationEndPoint = IterationEndPoint+"?offset={1}&limit={2}";
         const string IterationRecentEndPoint = IterationEndPoint + "/done?offset=-{1}";
 
-        public StoryService(AuthenticationToken token)
-            : base(token)
+        public StoryService(AuthenticationToken token, bool needsSSL = false)
+            : base(token, needsSSL)
         {
         }
 
@@ -137,7 +137,7 @@ namespace PivotalTrackerDotNet
             var response = RestClient.Execute(request);
             var iterations =new List<Iteration>();
             var serializer = new RestSharpXmlDeserializer();
-            var el = XElement.Parse(response.Content);
+            var el = ParseContent(response);
             iterations.AddRange(el.Elements("iteration").Select(iteration => serializer.Deserialize<Iteration>(iteration.ToString())));
             return iterations;
         }
@@ -309,7 +309,7 @@ namespace PivotalTrackerDotNet
             
             var stories = new Stories();
             var serializer = new RestSharpXmlDeserializer();
-            var el = XElement.Parse(response.Content);
+            var el = ParseContent(response);
             stories.AddRange(el.Descendants("story").Select(storey => serializer.Deserialize<Story>(storey.ToString())));
             return stories;
         }
@@ -320,7 +320,7 @@ namespace PivotalTrackerDotNet
             
             var stories = new Stories();
             var serializer = new RestSharpXmlDeserializer();
-            var el = XElement.Parse(response.Content);
+            var el = ParseContent(response);
             stories.AddRange(el.Elements("story").Select(storey => serializer.Deserialize<Story>(storey.ToString())));
             return stories;
         }
