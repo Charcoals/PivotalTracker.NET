@@ -24,6 +24,7 @@ namespace PivotalTrackerDotNet.Domain {
         public List<Task> Tasks { get; set; }
         public string CreatedAt { get; set; }
         public string AcceptedAt { get; set; }
+        public string Url { get; set; }
 
         public DateTime? CreatedOn
         {
