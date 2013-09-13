@@ -18,7 +18,7 @@ namespace PivotalTrackerDotNet {
         const string ProjectsEndpoint = "projects/";
         const string AcitivityEndpoint = "projects/{0}/activities?limit={1}";
 
-        public ProjectService(AuthenticationToken Token, bool needsSSL = false) : base(Token, needsSSL) { }
+        public ProjectService(AuthenticationToken Token) : base(Token) { }
 
         public List<Activity> GetRecentActivity(int projectId) {
             return GetRecentActivity(projectId, 30);
