@@ -10,7 +10,7 @@ namespace PivotalTrackerDotNet.Tests {
 
         [TestFixtureSetUp]
         public void TestFixtureSetUp() {
-            service = new ProjectService(AuthenticationService.Authenticate(Constants.Username, Constants.Password));
+            service = new ProjectService(Constants.ApiToken);
         }
 
         [Test]

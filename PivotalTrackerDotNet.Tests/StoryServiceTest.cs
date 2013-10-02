@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using PivotalTrackerDotNet.Domain;
 using NUnit.Framework;
 
@@ -12,7 +13,7 @@ namespace PivotalTrackerDotNet.Tests
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            storyService = new StoryService(AuthenticationService.Authenticate(Constants.Username, Constants.Password));
+            storyService = new StoryService(Constants.ApiToken);
         }
 
         [TearDown]
@@ -31,7 +32,7 @@ namespace PivotalTrackerDotNet.Tests
             var savedStory = storyService.AddNewStory(Constants.ProjectId, new Story
                                                                                {
                                                                                    Name = "Nouvelle histoire",
-                                                                                   RequestedBy = "pivotaltrackerdotnet",
+                                                                                   RequestedById = Constants.UserId,
                                                                                    StoryType = StoryType.Feature,
                                                                                    Description = "bla bla bla and more bla",
                                                                                    ProjectId = Constants.ProjectId,
@@ -40,9 +41,11 @@ namespace PivotalTrackerDotNet.Tests
             storyService.AddNewTask(new Task
             {
                 Description = "wololo",
-                ParentStoryId = savedStory.Id,
+                StoryId = savedStory.Id,
                 ProjectId = savedStory.ProjectId
             });
+
+            List<Task> tasks = storyService.GetTasksForStory(Constants.ProjectId, savedStory);
 
             var retrieved = storyService.GetStory(Constants.ProjectId, savedStory.Id);
             Assert.NotNull(retrieved);
@@ -51,8 +54,8 @@ namespace PivotalTrackerDotNet.Tests
             Assert.AreEqual(savedStory.StoryType, retrieved.StoryType);
             Assert.AreEqual(savedStory.Name, retrieved.Name);
             Assert.AreEqual(savedStory.Estimate, retrieved.Estimate);
-            Assert.AreEqual(1, retrieved.Tasks.Count);
-//           Assert.AreEqual(savedStory.Id, retrieved.Tasks[0].ParentStoryId);
+            Assert.AreEqual(1, tasks.Count);
+            Assert.AreEqual(savedStory.Id, tasks[0].StoryId);
 
         }
 
@@ -62,7 +65,7 @@ namespace PivotalTrackerDotNet.Tests
             var story = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Feature,
                 Description = "bla bla bla and more bla",
                 ProjectId = Constants.ProjectId
@@ -82,7 +85,7 @@ namespace PivotalTrackerDotNet.Tests
             var story = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Feature,
                 Description = "bla bla bla and more bla",
                 ProjectId = Constants.ProjectId
@@ -91,7 +94,7 @@ namespace PivotalTrackerDotNet.Tests
             var story2 = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Bug,
                 Description = "bla bla bla and more bla",
                 ProjectId = Constants.ProjectId
@@ -116,7 +119,7 @@ namespace PivotalTrackerDotNet.Tests
             var story1 = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Bug,
                 Description = "some story",
                 ProjectId = Constants.ProjectId
@@ -125,7 +128,7 @@ namespace PivotalTrackerDotNet.Tests
             var story2 = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Feature,
                 Description = "another story",
                 ProjectId = Constants.ProjectId
@@ -134,7 +137,7 @@ namespace PivotalTrackerDotNet.Tests
             var story3 = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Feature,
                 Description = "yet another story",
                 ProjectId = Constants.ProjectId
@@ -158,7 +161,7 @@ namespace PivotalTrackerDotNet.Tests
             var story1 = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Bug,
                 Description = "some story",
                 ProjectId = Constants.ProjectId
@@ -167,7 +170,7 @@ namespace PivotalTrackerDotNet.Tests
             var story2 = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Feature,
                 Description = "another story",
                 ProjectId = Constants.ProjectId
@@ -176,14 +179,14 @@ namespace PivotalTrackerDotNet.Tests
             var story3 = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Feature,
                 Description = "yet another story",
                 ProjectId = Constants.ProjectId
             };
 
             var savedStory = storyService.AddNewStory(Constants.ProjectId, story1);
-            savedStory.Labels = "5.1.30, plume";
+            savedStory.Labels = new List<Label>{"5.1.30","plume"};
             savedStory = storyService.UpdateStory(Constants.ProjectId, savedStory);
 
             storyService.AddNewStory(Constants.ProjectId, story2);
@@ -202,46 +205,44 @@ namespace PivotalTrackerDotNet.Tests
             var story = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Feature,
                 Description = "bla bla bla and more bla",
                 ProjectId = Constants.ProjectId,
                 CurrentState = StoryStatus.Delivered,
-                Estimate = 4
+                Estimate = 2
             };
 
             var savedStory = storyService.AddNewStory(Constants.ProjectId, story);
             System.Threading.Thread.Sleep(5000);//There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
-            var stories = storyService.GetCurrentStories(Constants.ProjectId);
+            var stories = storyService.GetIceboxStories(Constants.ProjectId);
             Assert.NotNull(stories);
             Assert.AreEqual(1, stories.Count);
             Assert.AreEqual(savedStory.Id, stories[0].Id);
         }
 
         [Test]
-        public void CanAddAndDeleteStores()
+        public void CanAddAndDeleteStories()
         {
             var story = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Feature,
                 Description = "bla bla bla and more bla",
                 ProjectId = Constants.ProjectId,
-                Estimate = 9
+                Estimate = 2
             };
 
             var savedStory = storyService.AddNewStory(Constants.ProjectId, story);
             Assert.AreEqual(story.Name, savedStory.Name);
             Assert.AreEqual(Constants.ProjectId, savedStory.ProjectId);
-            Assert.AreEqual(story.RequestedBy, savedStory.RequestedBy);
+            Assert.AreEqual(story.RequestedById, savedStory.RequestedById);
             Assert.AreEqual(story.StoryType, savedStory.StoryType);
             Assert.AreEqual(story.Description, savedStory.Description);
-            //Assert.AreEqual(9, expected.Estimate);
+            Assert.AreEqual(2, savedStory.Estimate);
 
-
-            var deletedStory = storyService.RemoveStory(Constants.ProjectId, savedStory.Id);
-            VerifyStory(savedStory, deletedStory);
+            storyService.RemoveStory(Constants.ProjectId, savedStory.Id);
         }
 
         [Test]
@@ -250,19 +251,18 @@ namespace PivotalTrackerDotNet.Tests
             var story = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Feature,
                 Description = "bla bla bla and more bla",
                 ProjectId = Constants.ProjectId,
-                Estimate = 9
+                Estimate = 2
             };
 
             var savedStory = storyService.AddNewStory(Constants.ProjectId, story);
             savedStory.Name = "Call be New name";
             savedStory.Description = "wololo";
             savedStory.Estimate = 1;
-            savedStory.Labels = "laby hh,pool";
-
+            savedStory.Labels = new List<Label> {"laby hh,pool"};
 
             var updatedStory = storyService.UpdateStory(Constants.ProjectId, savedStory);
             VerifyStory(savedStory, updatedStory);
@@ -275,7 +275,7 @@ namespace PivotalTrackerDotNet.Tests
             var story = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Feature,
                 Description = "bla bla bla and more bla",
                 ProjectId = Constants.ProjectId
@@ -283,19 +283,20 @@ namespace PivotalTrackerDotNet.Tests
 
             var savedStory = storyService.AddNewStory(Constants.ProjectId, story);
 
-
-            var task = storyService.AddNewTask(new Task { Description = "stuff stuff stuff", ParentStoryId = savedStory.Id, ProjectId = Constants.ProjectId });
-
+            var task = storyService.AddNewTask(new Task { Description = "stuff stuff stuff", StoryId = savedStory.Id, ProjectId = Constants.ProjectId });
 
             var guid = Guid.NewGuid().ToString();
 
             task.Description = guid;
 
-            storyService.SaveTask(task);
+            var savedTask = storyService.SaveTask(task);
+            Assert.AreEqual(task.Description, savedTask.Description);
+            Assert.AreEqual(task.ProjectId, savedTask.ProjectId);
+            Assert.AreEqual(task.StoryId, savedTask.StoryId);
 
-            var stories = storyService.GetAllStories(Constants.ProjectId);
+            var tasks = storyService.GetTasksForStory(Constants.ProjectId, savedStory);
 
-            Assert.AreEqual(guid, stories[0].Tasks[0].Description);
+            Assert.AreEqual(guid, tasks[0].Description);
         }
 
         [Test]
@@ -304,7 +305,7 @@ namespace PivotalTrackerDotNet.Tests
             var story = new Story
             {
                 Name = "Nouvelle histoire",
-                RequestedBy = "pivotaltrackerdotnet",
+                RequestedById = Constants.UserId,
                 StoryType = StoryType.Feature,
                 Description = "bla bla bla and more bla",
                 ProjectId = Constants.ProjectId
@@ -312,15 +313,15 @@ namespace PivotalTrackerDotNet.Tests
 
             var savedStory = storyService.AddNewStory(Constants.ProjectId, story);
 
-            var task = new Task { Description = "stuff stuff stuff", ParentStoryId = savedStory.Id, ProjectId = Constants.ProjectId };
+            var task = new Task { Description = "stuff stuff stuff", StoryId = savedStory.Id, ProjectId = Constants.ProjectId };
 
             var savedTask = storyService.AddNewTask(task);
             Assert.AreEqual(task.Description, savedTask.Description);
 
-            var retrievedTask = storyService.GetTask(Constants.ProjectId, savedTask.ParentStoryId, savedTask.Id);
+            var retrievedTask = storyService.GetTask(Constants.ProjectId, savedTask.StoryId, savedTask.Id);
             Assert.NotNull(retrievedTask);
 
-            Assert.IsTrue(storyService.RemoveTask(retrievedTask.ProjectId, task.ParentStoryId, retrievedTask.Id));
+            Assert.IsTrue(storyService.RemoveTask(retrievedTask.ProjectId, task.StoryId, retrievedTask.Id));
 
         }
 
@@ -330,7 +331,7 @@ namespace PivotalTrackerDotNet.Tests
             Assert.AreEqual(expected.Id, actual.Id);
             Assert.AreEqual(expected.Name, actual.Name);
             Assert.AreEqual(Constants.ProjectId, actual.ProjectId);
-            Assert.AreEqual(expected.RequestedBy, actual.RequestedBy);
+            Assert.AreEqual(expected.RequestedById, actual.RequestedById);
             Assert.AreEqual(expected.StoryType, actual.StoryType);
             Assert.AreEqual(expected.Description, actual.Description);
             Assert.AreEqual(expected.Estimate, actual.Estimate);
@@ -347,16 +348,15 @@ namespace PivotalTrackerDotNet.Tests
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            storyService = new StoryService(AuthenticationService.Authenticate(Constants.Username, Constants.Password));
+            storyService = new StoryService(Constants.ApiToken);
         }
 
         [Test]
         public void CanRetrieveAllStories()
         {
-            var stories = storyService.GetCurrentStories(projectId);
+            var stories = storyService.GetIceboxStories(projectId);
             Assert.NotNull(stories);
-            Assert.GreaterOrEqual(stories.Count, 150);
+            Assert.GreaterOrEqual(stories.Count, 100);
         }
     }
-
 }

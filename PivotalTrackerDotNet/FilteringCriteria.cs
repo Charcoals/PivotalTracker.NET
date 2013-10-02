@@ -31,9 +31,9 @@ namespace PivotalTrackerDotNet
             return this;
         }
 
-        public FilteringCriteria Label(string label)
+        public FilteringCriteria Label(Label label)
         {
-            if (!string.IsNullOrWhiteSpace(label)) AddFilter(string.Format("label:\"{0}\"", label));
+            if (!string.IsNullOrWhiteSpace(label.Name)) AddFilter(string.Format("label:\"{0}\"", label.Name));
             return this;
         }
 
