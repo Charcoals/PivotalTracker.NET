@@ -324,7 +324,13 @@ namespace PivotalTrackerDotNet.Tests
             Assert.NotNull(retrievedTask);
 
             Assert.IsTrue(storyService.RemoveTask(retrievedTask.ProjectId, task.StoryId, retrievedTask.Id));
+        }
 
+        [Test]
+        public void CanGetAllIterations() {
+            var iterations = storyService.GetAllIterations(Constants.ProjectId);
+            Assert.Greater(iterations.Count, 0);
+            Assert.NotNull(iterations[0].StartDate);
         }
 
 
