@@ -72,11 +72,13 @@ namespace PivotalTrackerDotNet.Tests
             };
 
             var savedStory = storyService.AddNewStory(Constants.ProjectId, story);
+            Assert.AreEqual(StoryType.Feature, savedStory.StoryType);
 
             var stories = storyService.GetAllStories(Constants.ProjectId);
             Assert.NotNull(stories);
             Assert.AreEqual(1, stories.Count);
             Assert.AreEqual(savedStory.Id, stories[0].Id);
+            Assert.AreEqual(StoryType.Feature, stories[0].StoryType);
         }
 
         [Test, Ignore("The code works, but the lag from pivotal is such that it requires to sleep for close to a minute to pass")]

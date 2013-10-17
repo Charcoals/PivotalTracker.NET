@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace PivotalTrackerDotNet.Domain {
@@ -18,6 +19,7 @@ namespace PivotalTrackerDotNet.Domain {
 
         public int Id { get; set; }
         public int ProjectId { get; set; }
+        [JsonProperty(PropertyName = "story_type")]
         public StoryType StoryType { get; set; }
         public int? Estimate { get; set; }
         public StoryStatus CurrentState { get; set; }
