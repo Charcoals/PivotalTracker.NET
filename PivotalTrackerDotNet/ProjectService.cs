@@ -13,6 +13,7 @@ namespace PivotalTrackerDotNet {
     public class ProjectService : AAuthenticatedService, IProjectService {
         const string ProjectsEndpoint = "projects";
         const string AcitivityEndpoint = "projects/{0}/activities?limit={1}";
+        const string ProjectEpics = "projects/{0}/epics";
 
         public ProjectService(string Token) : base(Token) { }
 
@@ -32,6 +33,14 @@ namespace PivotalTrackerDotNet {
             request.Resource = ProjectsEndpoint;
 
             return RestClient.ExecuteRequestWithChecks<List<Project>>(request);
+        }
+
+        public List<Epic> GetAllProjectEpics(int projectId)
+        {
+            var request = BuildGetRequest();
+            request.Resource = string.Format(ProjectEpics, projectId); ;
+
+            return RestClient.ExecuteRequestWithChecks<List<Epic>>(request);
         }
     }
 }

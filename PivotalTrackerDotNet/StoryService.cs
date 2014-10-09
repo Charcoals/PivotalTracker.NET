@@ -51,6 +51,7 @@ namespace PivotalTrackerDotNet
         const string StoryStateEndpoint = "projects/{0}/stories/{1}?story[current_state]={2}";
         const string StoryFilterEndpoint = StoriesEndpoint + "?filter={1}";
         const string StoryPaginationEndpoint = StoriesEndpoint + "?limit={1}&offset={2}";
+        const string StoryFilterPaginationEndpoint = StoryFilterEndpoint + "&limit={2}&offset={3}";
         const string IterationEndPoint = "projects/{0}/iterations";
         const string IterationPaginationEndPoint = IterationEndPoint+"?offset={1}&limit={2}";
         const string IterationRecentEndPoint = IterationEndPoint + "/done?offset=-{1}";
@@ -82,6 +83,19 @@ namespace PivotalTrackerDotNet
             request.Resource = string.Format(StoryFilterEndpoint, projectId, filter);
 
             return GetStories(request);
+        }
+
+        public List<Story> GetAllStoriesMatchingFilter(int projectId, string filter, int limit, int offset, bool addTask = true)
+        {
+            var request = BuildGetRequest();
+            request.Resource = string.Format(StoryFilterPaginationEndpoint, projectId, filter, limit, offset);
+
+            return GetStories(request);
+        }
+
+        public List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter, int limit, int offset)
+        {
+            return GetAllStoriesMatchingFilter(projectId, filter.ToString(), limit, offset);
         }
 
         public List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter)
