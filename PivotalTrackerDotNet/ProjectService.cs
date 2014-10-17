@@ -8,11 +8,12 @@ namespace PivotalTrackerDotNet {
         List<Project> GetProjects();
         List<Activity> GetRecentActivity(int projectId);
         List<Activity> GetRecentActivity(int projectId, int limit);
+        List<Epic> GetAllProjectEpics(int projectId);
     }
 
     public class ProjectService : AAuthenticatedService, IProjectService {
         const string ProjectsEndpoint = "projects";
-        const string AcitivityEndpoint = "projects/{0}/activities?limit={1}";
+        const string AcitivityEndpoint = "projects/{0}/activity?limit={1}";
         const string ProjectEpics = "projects/{0}/epics";
 
         public ProjectService(string Token) : base(Token) { }
