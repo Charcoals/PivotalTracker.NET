@@ -2,6 +2,8 @@
 
 namespace PivotalTrackerDotNet
 {
+    using System;
+
     public abstract class AAuthenticatedService
     {
         protected readonly string m_token;
@@ -9,7 +11,7 @@ namespace PivotalTrackerDotNet
         protected AAuthenticatedService(string token)
         {
             m_token = token;
-            RestClient = new RestClient {BaseUrl = PivotalTrackerRestEndpoint.SSLENDPOINT};
+            RestClient = new RestClient { BaseUrl = new Uri(PivotalTrackerRestEndpoint.SSLENDPOINT) };
         }
 
         protected RestRequest BuildGetRequest()
