@@ -3,14 +3,6 @@ using System.Linq;
 using PivotalTrackerDotNet.Domain;
 
 namespace PivotalTrackerDotNet {
-    public interface IProjectService
-    {
-        List<Project> GetProjects();
-        List<Activity> GetRecentActivity(int projectId);
-        List<Activity> GetRecentActivity(int projectId, int limit);
-        List<Epic> GetAllProjectEpics(int projectId);
-    }
-
     public class ProjectService : AAuthenticatedService, IProjectService {
         const string ProjectsEndpoint = "projects";
         const string AcitivityEndpoint = "projects/{0}/activity?limit={1}";

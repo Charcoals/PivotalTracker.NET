@@ -264,7 +264,7 @@ namespace PivotalTrackerDotNet.Tests
             savedStory.Name = "Call be New name";
             savedStory.Description = "wololo";
             savedStory.Estimate = 1;
-            savedStory.Labels = new List<Label> {"laby hh and pool"};
+            savedStory.Labels = new List<Label> {"laby hh,pool"};
 
             var updatedStory = storyService.UpdateStory(Constants.ProjectId, savedStory);
             VerifyStory(savedStory, updatedStory);
@@ -346,25 +346,5 @@ namespace PivotalTrackerDotNet.Tests
             Assert.AreEqual(expected.Labels, actual.Labels);
         }
 
-    }
-
-    [TestFixture]
-    public class StoryServiceLargeProjectTest
-    {
-        private StoryService storyService;
-        private const int projectId = 456295;
-        [TestFixtureSetUp]
-        public void TestFixtureSetUp()
-        {
-            storyService = new StoryService(Constants.ApiToken);
-        }
-
-        [Test]
-        public void CanRetrieveAllStories()
-        {
-            var stories = storyService.GetIceboxStories(projectId);
-            Assert.NotNull(stories);
-            Assert.GreaterOrEqual(stories.Count, 100);
-        }
     }
 }

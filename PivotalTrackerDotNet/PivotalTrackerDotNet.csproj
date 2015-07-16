@@ -59,9 +59,13 @@
     <Compile Include="Domain\Note.cs" />
     <Compile Include="Domain\Person.cs" />
     <Compile Include="Domain\Project.cs" />
+    <Compile Include="Domain\Stories.cs" />
     <Compile Include="Domain\Story.cs" />
     <Compile Include="Domain\Task.cs" />
     <Compile Include="FilteringCriteria.cs" />
+    <Compile Include="IMembershipService.cs" />
+    <Compile Include="IProjectService.cs" />
+    <Compile Include="IStoryService.cs" />
     <Compile Include="MembershipService.cs" />
     <Compile Include="PivotalTrackerRestEndpoint.cs" />
     <Compile Include="ProjectService.cs" />

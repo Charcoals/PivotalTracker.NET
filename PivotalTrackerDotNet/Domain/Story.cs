@@ -5,12 +5,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace PivotalTrackerDotNet.Domain {
-
-    public class Stories:List<Story>
-    {
-        
-    }
-
     public class Story {
         public Story() {
             Notes =  new List<Note>();

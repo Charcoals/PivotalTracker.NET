@@ -48,6 +48,7 @@
     <Compile Include="MemberShipServiceTest.cs" />
     <Compile Include="ProjectServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StoryServiceLargeProjectTest.cs" />
     <Compile Include="StoryServiceTest.cs" />
     <Compile Include="Constants.cs" />
   </ItemGroup>
