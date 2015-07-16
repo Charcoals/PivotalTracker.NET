@@ -52,13 +52,13 @@ namespace PivotalTrackerDotNet
 
         public FilteringCriteria CreatedSince(DateTime since)
         {
-            AddFilter(string.Format("created_since:{0}", since.ToString("d", CultureInfo.GetCultureInfo("en-US"))));
+            AddFilter(string.Format("created_since:\"{0}\"", since.ToString("u")));
             return this;
         }
 
         public FilteringCriteria ModifiedSince(DateTime since)
         {
-            AddFilter(string.Format("modified_since:{0}", since.ToString("d", CultureInfo.GetCultureInfo("en-US"))));
+            AddFilter(string.Format("modified_since:\"{0}\"", since.ToString("u")));
             return this;
         }
 

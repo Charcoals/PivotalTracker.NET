@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
 using PivotalTrackerDotNet.Domain;
 using NUnit.Framework;
 
@@ -199,6 +201,54 @@ namespace PivotalTrackerDotNet.Tests
             Assert.NotNull(stories);
             Assert.AreEqual(1, stories.Count);
             Assert.AreEqual(savedStory.Id, stories[0].Id);
+        }
+
+        [Test]
+        public void CanGetAllStoriesMatchingFilterCreatedSince_Strict()
+        {
+            var story1 = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedById = Constants.UserId,
+                StoryType = StoryType.Bug,
+                Description = "some story",
+                ProjectId = Constants.ProjectId
+            };
+
+            var story2 = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedById = Constants.UserId,
+                StoryType = StoryType.Feature,
+                Description = "another story",
+                ProjectId = Constants.ProjectId
+            };
+
+            var story3 = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedById = Constants.UserId,
+                StoryType = StoryType.Feature,
+                Description = "yet another story",
+                ProjectId = Constants.ProjectId
+            };
+
+            var savedStory1 = storyService.AddNewStory(Constants.ProjectId, story1);
+            savedStory1.Labels = new List<Label>{"5.1.30","plume"};
+            savedStory1 = storyService.UpdateStory(Constants.ProjectId, savedStory1);
+
+            var savedStory2 = storyService.AddNewStory(Constants.ProjectId, story2);
+            var savedStory3 = storyService.AddNewStory(Constants.ProjectId, story3);
+
+            System.Threading.Thread.Sleep(5000);//There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
+            var stories = storyService.GetAllStoriesMatchingFilter(Constants.ProjectId, FilteringCriteria.FilterBy.CreatedSince(new DateTime(2008, 1, 1)));
+            Assert.NotNull(stories);
+            Assert.AreEqual(3, stories.Count);
+
+            var savedIds = new[] { savedStory1.Id, savedStory2.Id, savedStory3.Id }.OrderBy(i => i).ToArray();
+            var storyIds = stories.Select(s => s.Id).OrderBy(i => i).ToArray();
+
+            Assert.IsTrue(storyIds.SequenceEqual(savedIds));
         }
 
         [Test]
