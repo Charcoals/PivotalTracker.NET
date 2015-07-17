@@ -4,10 +4,13 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace PivotalTrackerDotNet.Domain {
-    public class Story {
-        public Story() {
-            Notes =  new List<Note>();
+namespace PivotalTrackerDotNet.Domain
+{
+    public class Story
+    {
+        public Story()
+        {
+            Notes  = new List<Note>();
             Labels = new List<Label>();
         }
 
@@ -38,13 +41,14 @@ namespace PivotalTrackerDotNet.Domain {
 
         public string ToJson()
         {
-            var values = new JObject( new JProperty("name", Name),
+            var values = new JObject(new JProperty("name", Name),
                                 new JProperty("story_type", StoryType.ToString().ToLower()),
                                 new JProperty("description", Description),
                                 new JProperty("requested_by_id", RequestedById),
                                 new JProperty("labels", new JArray(Labels.Select(l => l.Name))));
 
-            if (Estimate.HasValue) {
+            if (Estimate.HasValue)
+            {
                 values.Add(new JProperty("estimate", Estimate));
             }
 
@@ -53,9 +57,7 @@ namespace PivotalTrackerDotNet.Domain {
 
     }
 
-    public enum StoryStatus { UnScheduled, UnStarted, Started, Finished, Delivered, Accepted, Rejected }
-    public enum StoryType { Bug, Chore, Feature, Release }
-    //  <story>
+    // <story>
     //  <id type="integer">$STORY_ID</id>
     //  <project_id type="integer">$PROJECT_ID</project_id>
     //  <story_type>feature</story_type>
@@ -81,5 +83,5 @@ namespace PivotalTrackerDotNet.Domain {
     //      <url>http://www.pivotaltracker.com/resource/download/1295103</url>
     //    </attachment>
     //  </attachments>
-    //</story>
+    // </story>
 }

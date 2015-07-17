@@ -4,6 +4,7 @@ using PivotalTrackerDotNet.Domain;
 
 namespace PivotalTrackerDotNet.Tests
 {
+    // ReSharper disable InconsistentNaming
     [TestFixture]
     public class FilteringCriteriaTest
     {
@@ -18,7 +19,7 @@ namespace PivotalTrackerDotNet.Tests
         [Test]
         public void CanFilterByRequester_Empty()
         {
-            Assert.AreEqual(string.Empty, FilteringCriteria.FilterBy.Requester("").ToString());
+            Assert.AreEqual(string.Empty, FilteringCriteria.FilterBy.Requester(string.Empty).ToString());
         }
 
         [Test]
@@ -30,21 +31,18 @@ namespace PivotalTrackerDotNet.Tests
         [Test]
         public void CanFilterByState()
         {
-
             Assert.AreEqual("state:unscheduled", FilteringCriteria.FilterBy.State(StoryStatus.UnScheduled).ToString());
         }
 
         [Test]
         public void CanFilterByModified()
         {
-
-            Assert.AreEqual("modified_since:\"2008-09-09 00:00:00Z\"", FilteringCriteria.FilterBy.ModifiedSince(new DateTime(2008,9,9)).ToString());
+            Assert.AreEqual("modified_since:\"2008-09-09 00:00:00Z\"", FilteringCriteria.FilterBy.ModifiedSince(new DateTime(2008, 9, 9)).ToString());
         }
 
         [Test]
         public void CanFilterByCreated()
         {
-
             Assert.AreEqual("created_since:\"2008-09-09 00:00:00Z\"", FilteringCriteria.FilterBy.CreatedSince(new DateTime(2008, 9, 9)).ToString());
         }
 
@@ -59,7 +57,7 @@ namespace PivotalTrackerDotNet.Tests
         [Test]
         public void CanFilterByOwner_Empty()
         {
-            Assert.AreEqual(string.Empty, FilteringCriteria.FilterBy.Owner("").ToString());
+            Assert.AreEqual(string.Empty, FilteringCriteria.FilterBy.Owner(string.Empty).ToString());
         }
 
         [Test]
@@ -68,8 +66,10 @@ namespace PivotalTrackerDotNet.Tests
             var owner = "JTK";
             var requester = "Hey Hey";
 
-            string expected = string.Format("owner:\"{0}\" requester:\"{1}\"", owner,requester);
+            string expected = string.Format("owner:\"{0}\" requester:\"{1}\"", owner, requester);
             Assert.AreEqual(expected, FilteringCriteria.FilterBy.Owner(owner).Requester(requester).ToString());
         }
     }
+
+    // ReSharper restore InconsistentNaming
 }

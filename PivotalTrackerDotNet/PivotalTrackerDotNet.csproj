@@ -61,6 +61,8 @@
     <Compile Include="Domain\Project.cs" />
     <Compile Include="Domain\Stories.cs" />
     <Compile Include="Domain\Story.cs" />
+    <Compile Include="Domain\StoryStatus.cs" />
+    <Compile Include="Domain\StoryType.cs" />
     <Compile Include="Domain\Task.cs" />
     <Compile Include="FilteringCriteria.cs" />
     <Compile Include="IMembershipService.cs" />

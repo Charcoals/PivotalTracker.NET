@@ -8,19 +8,19 @@ namespace PivotalTrackerDotNet
 {
     public class StoryService : AAuthenticatedService, IStoryService
     {
-        const string SpecifiedIterationEndpoint = "projects/{0}/iterations?scope={1}";
-        const string SingleStoryEndpoint = "projects/{0}/stories/{1}";
-        const string StoriesEndpoint = "projects/{0}/stories";
-        const string TaskEndpoint = "projects/{0}/stories/{1}/tasks";
-        const string SaveNewCommentEndpoint = "projects/{0}/stories/{1}/notes?note[text]={2}";
-        const string SingleTaskEndpoint = "projects/{0}/stories/{1}/tasks/{2}";//projects/$PROJECT_ID/stories/$STORY_ID/tasks/$TASK_ID
-        const string StoryStateEndpoint = "projects/{0}/stories/{1}?story[current_state]={2}";
-        const string StoryFilterEndpoint = StoriesEndpoint + "?filter={1}";
-        const string StoryPaginationEndpoint = StoriesEndpoint + "?limit={1}&offset={2}";
-        const string StoryFilterPaginationEndpoint = StoryFilterEndpoint + "&limit={2}&offset={3}";
-        const string IterationEndPoint = "projects/{0}/iterations";
-        const string IterationPaginationEndPoint = IterationEndPoint + "?offset={1}&limit={2}";
-        const string IterationRecentEndPoint = IterationEndPoint + "/done?offset=-{1}";
+        private const string SpecifiedIterationEndpoint    = "projects/{0}/iterations?scope={1}";
+        private const string SingleStoryEndpoint           = "projects/{0}/stories/{1}";
+        private const string StoriesEndpoint               = "projects/{0}/stories";
+        private const string TaskEndpoint                  = "projects/{0}/stories/{1}/tasks";
+        private const string SaveNewCommentEndpoint        = "projects/{0}/stories/{1}/notes?note[text]={2}";
+        private const string SingleTaskEndpoint            = "projects/{0}/stories/{1}/tasks/{2}"; // projects/$PROJECT_ID/stories/$STORY_ID/tasks/$TASK_ID
+        private const string StoryStateEndpoint            = "projects/{0}/stories/{1}?story[current_state]={2}";
+        private const string StoryFilterEndpoint           = StoriesEndpoint + "?filter={1}";
+        private const string StoryPaginationEndpoint       = StoriesEndpoint + "?limit={1}&offset={2}";
+        private const string StoryFilterPaginationEndpoint = StoryFilterEndpoint + "&limit={2}&offset={3}";
+        private const string IterationEndPoint             = "projects/{0}/iterations";
+        private const string IterationPaginationEndPoint   = IterationEndPoint + "?offset={1}&limit={2}";
+        private const string IterationRecentEndPoint       = IterationEndPoint + "/done?offset=-{1}";
 
         public StoryService(string token)
             : base(token)
@@ -32,7 +32,7 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(StoriesEndpoint, projectId);
 
-            return GetStories(request);
+            return this.GetStories(request);
         }
 
         public List<Story> GetAllStories(int projectId, int limit, int offset, bool addTask = true)
@@ -40,7 +40,7 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(StoryPaginationEndpoint, projectId, limit, offset);
 
-            return GetStories(request);
+            return this.GetStories(request);
         }
 
         public List<Story> GetAllStoriesMatchingFilter(int projectId, string filter, bool addTask = true)
@@ -48,7 +48,7 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(StoryFilterEndpoint, projectId, filter);
 
-            return GetStories(request);
+            return this.GetStories(request);
         }
 
         public List<Story> GetAllStoriesMatchingFilter(int projectId, string filter, int limit, int offset, bool addTask = true)
@@ -56,22 +56,22 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(StoryFilterPaginationEndpoint, projectId, filter, limit, offset);
 
-            return GetStories(request);
+            return this.GetStories(request);
         }
 
         public List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter, int limit, int offset)
         {
-            return GetAllStoriesMatchingFilter(projectId, filter.ToString(), limit, offset);
+            return this.GetAllStoriesMatchingFilter(projectId, filter.ToString(), limit, offset);
         }
 
         public List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter)
         {
-            return GetAllStoriesMatchingFilter(projectId, filter.ToString());
+            return this.GetAllStoriesMatchingFilter(projectId, filter.ToString());
         }
 
         public Story FinishStory(int projectId, int storyId)
         {
-            var originalStory = GetStory(projectId, storyId);
+            var originalStory = this.GetStory(projectId, storyId);
             string finished = originalStory.StoryType == StoryType.Chore ? "accepted" : "finished";
 
             var request = BuildPutRequest();
@@ -96,7 +96,7 @@ namespace PivotalTrackerDotNet
 
         public Story GetStory(int projectId, int storyId)
         {
-            return FindStory(projectId, storyId);
+            return this.FindStory(projectId, storyId);
         }
 
         public List<Iteration> GetAllIterations(int projectId)
@@ -104,15 +104,7 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(IterationEndPoint, projectId);
 
-            return GetIteration(request);
-        }
-
-        private List<Iteration> GetIteration(RestRequest request)
-        {
-            var el = RestClient.ExecuteRequestWithChecks(request);
-            var iterations = new List<Iteration>();
-            iterations.AddRange(el.Select(iteration => iteration.ToObject<Iteration>()));
-            return iterations;
+            return this.GetIteration(request);
         }
 
         public List<Iteration> GetAllIterations(int projectId, int limit, int offset)
@@ -120,49 +112,49 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(IterationPaginationEndPoint, projectId, offset, limit);
 
-            return GetIteration(request);
+            return this.GetIteration(request);
         }
 
         public List<Iteration> GetLastIterations(long projectId, int number)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(IterationRecentEndPoint, projectId, number);
-            return GetIteration(request);
+            return this.GetIteration(request);
         }
 
         public List<Iteration> GetCurrentIterations(int projectId)
         {
-            return GetIterationsByType(projectId, "current");
+            return this.GetIterationsByType(projectId, "current");
         }
 
         public List<Iteration> GetDoneIterations(int projectId)
         {
-            return GetIterationsByType(projectId, "done");
+            return this.GetIterationsByType(projectId, "done");
         }
 
         public List<Iteration> GetBacklogIterations(int projectId)
         {
-            return GetIterationsByType(projectId, "backlog");
+            return this.GetIterationsByType(projectId, "backlog");
         }
 
         public List<Story> GetCurrentStories(int projectId)
         {
-            return GetStoriesByIterationType(projectId, "current");
+            return this.GetStoriesByIterationType(projectId, "current");
         }
 
         public List<Story> GetDoneStories(int projectId)
         {
-            return GetStoriesByIterationType(projectId, "done");
+            return this.GetStoriesByIterationType(projectId, "done");
         }
 
         public List<Story> GetIceboxStories(int projectId)
         {
-            return GetAllStoriesMatchingFilter(projectId, "state:unscheduled");
+            return this.GetAllStoriesMatchingFilter(projectId, "state:unscheduled");
         }
 
         public List<Story> GetBacklogStories(int projectId)
         {
-            return GetStoriesByIterationType(projectId, "backlog");
+            return this.GetStoriesByIterationType(projectId, "backlog");
         }
 
         public void RemoveStory(int projectId, int storyId)
@@ -206,8 +198,7 @@ namespace PivotalTrackerDotNet
             Parallel.ForEach(tasks, t =>
             {
                 var request = BuildPutRequest();
-                request.Resource = string.Format(TaskEndpoint + "/{2}?task[position]={3}", t.ProjectId,
-                                                 t.StoryId, t.Id, t.Position);
+                request.Resource = string.Format(TaskEndpoint + "/{2}?task[position]={3}", t.ProjectId, t.StoryId, t.Id, t.Position);
                 RestClient.ExecuteRequestWithChecks(request);
             });
         }
@@ -241,6 +232,13 @@ namespace PivotalTrackerDotNet
             return output;
         }
 
+        public List<Task> GetTasksForStory(int projectId, Story story)
+        {
+            var request = this.BuildGetRequest();
+            request.Resource = string.Format(TaskEndpoint, projectId, story.Id);
+            return RestClient.ExecuteRequestWithChecks<List<Task>>(request);
+        }
+
         public void AddComment(int projectId, int storyId, string comment)
         {
             var request = BuildPostRequest();
@@ -248,7 +246,7 @@ namespace PivotalTrackerDotNet
             RestClient.ExecuteRequestWithChecks(request);
         }
 
-        Story FindStory(int projectId, int storyId)
+        private Story FindStory(int projectId, int storyId)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(SingleStoryEndpoint, projectId, storyId);
@@ -256,14 +254,14 @@ namespace PivotalTrackerDotNet
             return RestClient.ExecuteRequestWithChecks<Story>(request);
         }
 
-        List<Iteration> GetIterationsByType(int projectId, string iterationType)
+        private List<Iteration> GetIterationsByType(int projectId, string iterationType)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(SpecifiedIterationEndpoint, projectId, iterationType);
-            return GetIteration(request);
+            return this.GetIteration(request);
         }
 
-        List<Story> GetStoriesByIterationType(int projectId, string iterationType)
+        private List<Story> GetStoriesByIterationType(int projectId, string iterationType)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(SpecifiedIterationEndpoint, projectId, iterationType);
@@ -274,20 +272,21 @@ namespace PivotalTrackerDotNet
             return stories;
         }
 
-        List<Story> GetStories(RestRequest request)
+        private List<Iteration> GetIteration(RestRequest request)
+        {
+            var el = RestClient.ExecuteRequestWithChecks(request);
+            var iterations = new List<Iteration>();
+            iterations.AddRange(el.Select(iteration => iteration.ToObject<Iteration>()));
+            return iterations;
+        }
+
+        private List<Story> GetStories(RestRequest request)
         {
             var el = RestClient.ExecuteRequestWithChecks(request);
 
             var stories = new Stories();
             stories.AddRange(el.Select(storey => storey.ToObject<Story>()));
             return stories;
-        }
-
-        public List<Task> GetTasksForStory(int projectId, Story story)
-        {
-            var request = this.BuildGetRequest();
-            request.Resource = string.Format(TaskEndpoint, projectId, story.Id);
-            return RestClient.ExecuteRequestWithChecks<List<Task>>(request);
         }
     }
 }

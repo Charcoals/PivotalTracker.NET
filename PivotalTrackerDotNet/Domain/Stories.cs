@@ -2,8 +2,7 @@
 
 namespace PivotalTrackerDotNet.Domain
 {
-    public class Stories:List<Story>
+    public class Stories : List<Story>
     {
-        
     }
 }

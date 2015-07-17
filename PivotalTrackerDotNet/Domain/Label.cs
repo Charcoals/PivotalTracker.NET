@@ -16,6 +16,9 @@ namespace PivotalTrackerDotNet.Domain
         {
             var other = obj as Label;
 
+            if (other == null)
+                return false;
+
             if (this.ProjectId != null && other.ProjectId != null && this.ProjectId != other.ProjectId)
                 return false;
 

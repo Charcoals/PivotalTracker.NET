@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace PivotalTrackerDotNet.Domain {
-    public class Project {
+namespace PivotalTrackerDotNet.Domain
+{
+    public class Project
+    {
         public string Kind { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,6 +14,6 @@ namespace PivotalTrackerDotNet.Domain {
         public string VelocityScheme { get; set; }
         public int CurrentVelocity { get; set; }
         public string LastActivityAt { get; set; }
-        public bool UseHTTPS { get; set; }        
+        public bool UseHTTPS { get; set; }
     }
 }

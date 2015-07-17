@@ -5,8 +5,9 @@ namespace PivotalTrackerDotNet.Tests
     [TestFixture]
     public class StoryServiceLargeProjectTest
     {
+        private const int ProjectId = 456295;
         private StoryService storyService;
-        private const int projectId = 456295;
+
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
@@ -16,7 +17,7 @@ namespace PivotalTrackerDotNet.Tests
         [Test]
         public void CanRetrieveAllStories()
         {
-            var stories = this.storyService.GetIceboxStories(projectId);
+            var stories = this.storyService.GetIceboxStories(ProjectId);
             Assert.NotNull(stories);
             Assert.GreaterOrEqual(stories.Count, 100);
         }
