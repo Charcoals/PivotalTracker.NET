@@ -314,7 +314,7 @@ namespace PivotalTrackerDotNet.Tests
             savedStory.Name = "Call be New name";
             savedStory.Description = "wololo";
             savedStory.Estimate = 1;
-            savedStory.Labels = new List<Label> {"laby hh,pool"};
+            savedStory.Labels = new List<Label> { "laby hh", "pool" };
 
             var updatedStory = storyService.UpdateStory(Constants.ProjectId, savedStory);
             VerifyStory(savedStory, updatedStory);
@@ -393,6 +393,7 @@ namespace PivotalTrackerDotNet.Tests
             Assert.AreEqual(expected.StoryType, actual.StoryType);
             Assert.AreEqual(expected.Description, actual.Description);
             Assert.AreEqual(expected.Estimate, actual.Estimate);
+            Assert.AreEqual(expected.Labels.Count, actual.Labels.Count);
             Assert.AreEqual(expected.Labels, actual.Labels);
         }
 

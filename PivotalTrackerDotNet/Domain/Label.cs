@@ -1,34 +1,41 @@
-using System;
-
-namespace PivotalTrackerDotNet.Domain {
-    public class Label {
-        public static implicit operator Label(string name) {
-            return new Label {Name = name};
-        }
-        public int ProjectID { get; set; }
+namespace PivotalTrackerDotNet.Domain
+{
+    public class Label
+    {
+        public int? ProjectID { get; set; }
         public string Name { get; set; }
         public string Kind { get; set; }
-        public int ID { get; set; }
+        public int? ID { get; set; }
 
-        public override string ToString() {
-            return String.Format("{0} - {1}", ID, Name);
+        public static implicit operator Label(string name)
+        {
+            return new Label { Name = name };
         }
 
-        public override bool Equals(Object obj) {
-            Label p = obj as Label;
-            if ((object)p == null)
-            {
+        public override bool Equals(object obj)
+        {
+            var other = obj as Label;
+
+            if (this.ProjectID != null && other.ProjectID != null && this.ProjectID != other.ProjectID)
                 return false;
-            }
 
-            return Name.Equals(p.Name);
+            if (this.ID != null && other.ID != null && this.ID != other.ID)
+                return false;
+
+            if (this.Kind != null && other.Kind != null && !string.Equals(this.Kind, other.Kind))
+                return false;
+
+            return string.Equals(this.Name, other.Name);
         }
 
-        public bool Equals(Label p) {
-            return Name.Equals(p.Name);
+        public override string ToString()
+        {
+            return this.Name;
         }
 
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
+            // TODO: Fix this
             return Name.GetHashCode();
         }
     }
