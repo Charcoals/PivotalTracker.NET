@@ -25,5 +25,15 @@ namespace PivotalTrackerDotNet.Domain
                 this.Value = value.ToString();
             }
         }
+
+        public static implicit operator string(AuthenticationToken token)
+        {
+            return token.Value;
+        }
+
+        public override string ToString()
+        {
+            return this.Value;
+        }
     }
 }

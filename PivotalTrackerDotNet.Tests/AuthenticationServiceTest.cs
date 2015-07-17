@@ -6,6 +6,7 @@ using PivotalTrackerDotNet.Domain;
 
 namespace PivotalTrackerDotNet.Tests
 {
+    // ReSharper disable InconsistentNaming
     [TestFixture]
     public class AuthenticationServiceTest
     {
@@ -30,6 +31,22 @@ namespace PivotalTrackerDotNet.Tests
         {
             var service = new AuthenticationService(Constants.ApiToken);
             var account = service.GetAccount();
+            VerifyAccount(account);
+        }
+
+        [Test]
+        public void CanGetAccountFromClient_ApiToken()
+        {
+            var client = new PivotalTrackerClient(Constants.ApiToken);
+            var account = client.Account.GetAccount();
+            VerifyAccount(account);
+        }
+
+        [Test]
+        public void CanGetAccountFromClient_UserNamePassword()
+        {
+            var client = new PivotalTrackerClient(Constants.Username, Constants.Password);
+            var account = client.Account.GetAccount();
             VerifyAccount(account);
         }
 
@@ -65,4 +82,5 @@ namespace PivotalTrackerDotNet.Tests
             }
         }
     }
+    // ReSharper restore InconsistentNaming
 }

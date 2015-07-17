@@ -70,10 +70,12 @@
     <Compile Include="Domain\Task.cs" />
     <Compile Include="Domain\TimeZone.cs" />
     <Compile Include="FilteringCriteria.cs" />
+    <Compile Include="IAuthenticationService.cs" />
     <Compile Include="IMembershipService.cs" />
     <Compile Include="IProjectService.cs" />
     <Compile Include="IStoryService.cs" />
     <Compile Include="MembershipService.cs" />
+    <Compile Include="PivotalTrackerClient.cs" />
     <Compile Include="PivotalTrackerRestEndpoint.cs" />
     <Compile Include="ProjectService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

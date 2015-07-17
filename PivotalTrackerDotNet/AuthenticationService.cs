@@ -3,7 +3,7 @@ using RestSharp;
 
 namespace PivotalTrackerDotNet
 {
-    public class AuthenticationService : AAuthenticatedService
+    public class AuthenticationService : AAuthenticatedService, IAuthenticationService
     {
         private const string AuthenticationEndpoint = "me";
 
