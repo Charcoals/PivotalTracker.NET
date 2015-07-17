@@ -10,8 +10,8 @@ namespace PivotalTrackerDotNet.Domain
     {
         public Story()
         {
-            Notes  = new List<Note>();
-            Labels = new List<Label>();
+            this.Notes  = new List<Note>();
+            this.Labels = new List<Label>();
         }
 
         public int Id { get; set; }

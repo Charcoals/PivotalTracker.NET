@@ -14,6 +14,10 @@ namespace PivotalTrackerDotNet
         {
         }
 
+        public ProjectService(AuthenticationToken token) : base(token)
+        {
+        }
+
         public List<Activity> GetRecentActivity(int projectId)
         {
             return this.GetRecentActivity(projectId, 30);

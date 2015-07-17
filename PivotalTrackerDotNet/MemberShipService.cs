@@ -12,6 +12,10 @@ namespace PivotalTrackerDotNet
         {
         }
 
+        public MembershipService(AuthenticationToken token) : base(token)
+        {
+        }
+
         public List<Person> GetMembers(int projectId)
         {
             var request = BuildGetRequest();

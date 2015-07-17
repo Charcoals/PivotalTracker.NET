@@ -1,4 +1,6 @@
-﻿using RestSharp;
+﻿using PivotalTrackerDotNet.Domain;
+
+using RestSharp;
 
 namespace PivotalTrackerDotNet
 {
@@ -13,6 +15,10 @@ namespace PivotalTrackerDotNet
         {
             this.token      = token;
             this.restClient = new RestClient { BaseUrl = new Uri(PivotalTrackerRestEndpoint.SSLENDPOINT) };
+        }
+
+        protected AAuthenticatedService(AuthenticationToken token) : this(token.Value)
+        {
         }
 
         protected string Token

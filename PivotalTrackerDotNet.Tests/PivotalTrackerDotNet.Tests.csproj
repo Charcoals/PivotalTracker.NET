@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="FilteringCriteriaTest.cs" />
     <Compile Include="MemberShipServiceTest.cs" />
+    <Compile Include="AuthenticationServiceTest.cs" />
     <Compile Include="ProjectServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StoryServiceLargeProjectTest.cs" />
