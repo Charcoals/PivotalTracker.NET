@@ -1,4 +1,6 @@
-﻿using PivotalTrackerDotNet.Domain;
+﻿using System.Diagnostics;
+
+using PivotalTrackerDotNet.Domain;
 
 using RestSharp;
 
@@ -28,6 +30,7 @@ namespace PivotalTrackerDotNet
 
         protected RestClient RestClient
         {
+            [DebuggerStepThrough]
             get { return this.restClient; }
         }
 

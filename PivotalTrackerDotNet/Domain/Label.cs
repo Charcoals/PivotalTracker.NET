@@ -1,11 +1,16 @@
+using System;
+
 namespace PivotalTrackerDotNet.Domain
 {
     public class Label
     {
+        public int? Id { get; set; }
         public int? ProjectId { get; set; }
         public string Name { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
+        public StoryCounts Counts { get; set; } //  excluded by default
         public string Kind { get; set; }
-        public int? Id { get; set; }
 
         public static implicit operator Label(string name)
         {
