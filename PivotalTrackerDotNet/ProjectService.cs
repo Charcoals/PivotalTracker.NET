@@ -80,7 +80,7 @@ namespace PivotalTrackerDotNet
             request.Resource = string.Format(SingleProjectEndpoint, projectId);
             string fieldsQuery = ":default,shown_iterations_start_time,current_velocity,current_volatility";
 
-            var fieldsToInclude = GetFieldsNames(fields);
+            var fieldsToInclude = this.GetFieldsNames(fields);
             
             if (fieldsToInclude.Any())
                 fieldsQuery += "," + string.Join(",", fieldsToInclude);
