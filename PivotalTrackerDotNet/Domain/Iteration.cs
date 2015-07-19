@@ -7,19 +7,16 @@ namespace PivotalTrackerDotNet.Domain
     {
         public int Id { get; set; }
         public int Number { get; set; }
-        public string Start { get; set; }
-        public string Finish { get; set; }
+        public int ProjectId { get; set; }
+        public int Length { get; set; }
         public float TeamStrength { get; set; }
+
+        public List<int> StoryIds { get; set; }
         public List<Story> Stories { get; set; }
 
-        public DateTime? StartDate
-        {
-            get { return Start.ConvertTime(); }
-        }
+        public DateTimeOffset? Start { get; set; }
+        public DateTimeOffset? Finish { get; set; }
 
-        public DateTime? FinishDate
-        {
-            get { return Finish.ConvertTime(); }
-        }
+        public string Kind { get; set; }
     }
 }
