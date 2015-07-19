@@ -419,7 +419,7 @@ namespace PivotalTrackerDotNet.Tests
         {
             var iterations = this.storyService.GetAllIterations(Constants.ProjectId);
             Assert.Greater(iterations.Count, 0);
-            Assert.NotNull(iterations[0].StartDate);
+            Assert.NotNull(iterations[0].Start);
         }
 
         [Test]
