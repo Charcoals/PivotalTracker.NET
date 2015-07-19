@@ -28,6 +28,7 @@ namespace PivotalTrackerDotNet
         Story FinishStory(int projectId, int storyId);
         Story StartStory(int projectId, int storyId);
         Story GetStory(int projectId, int storyId);
+        Story GetStory(int projectId, int storyId, StoryIncludeFields fields);
         void RemoveStory(int projectId, int storyId);
         Story UpdateStory(int projectId, Story story);
 

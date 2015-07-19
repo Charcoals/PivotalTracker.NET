@@ -13,7 +13,8 @@ namespace PivotalTrackerDotNet
         private const string StoriesEndpoint               = "projects/{0}/stories";
         private const string TaskEndpoint                  = "projects/{0}/stories/{1}/tasks";
         private const string StoryActivityEndpoint         = "projects/{0}/stories/{1}/activity";
-        private const string SaveNewCommentEndpoint        = "projects/{0}/stories/{1}/notes?note[text]={2}";
+        private const string StoryCommentsEndpoint         = "projects/{0}/stories/{1}/comments";
+        private const string SaveNewCommentEndpoint        = "projects/{0}/stories/{1}/comments?text={2}";
         private const string SingleTaskEndpoint            = "projects/{0}/stories/{1}/tasks/{2}";
         private const string StoryStateEndpoint            = "projects/{0}/stories/{1}?story[current_state]={2}";
         private const string StoryFilterEndpoint           = StoriesEndpoint + "?filter={1}";
@@ -97,7 +98,25 @@ namespace PivotalTrackerDotNet
 
         public Story GetStory(int projectId, int storyId)
         {
-            return this.FindStory(projectId, storyId);
+            var request = BuildGetRequest(string.Format(SingleStoryEndpoint, projectId, storyId));
+
+            return RestClient.ExecuteRequestWithChecks<Story>(request);
+        }
+
+        public Story GetStory(int projectId, int storyId, StoryIncludeFields fields)
+        {
+            var request = BuildGetRequest(string.Format(SingleStoryEndpoint, projectId, storyId));
+            
+            string fieldsQuery = ":default";
+
+            var fieldsToInclude = this.GetFieldsNames(fields);
+            
+            if (fieldsToInclude.Any())
+                fieldsQuery += "," + string.Join(",", fieldsToInclude);
+            
+            request.AddQueryParameter("fields", fieldsQuery);
+
+            return RestClient.ExecuteRequestWithChecks<Story>(request);
         }
 
         public List<Iteration> GetAllIterations(int projectId)
@@ -267,12 +286,11 @@ namespace PivotalTrackerDotNet
             return RestClient.ExecuteRequestWithChecks<PagedResult<Activity>>(request);
         }
 
-        private Story FindStory(int projectId, int storyId)
+        public List<Comment> GetStoryComments(int projectId, int storyId)
         {
-            var request = BuildGetRequest();
-            request.Resource = string.Format(SingleStoryEndpoint, projectId, storyId);
+            var request = this.BuildGetRequest(string.Format(StoryCommentsEndpoint, projectId, storyId));
 
-            return RestClient.ExecuteRequestWithChecks<Story>(request);
+            return RestClient.ExecuteRequestWithChecks<List<Comment>>(request);
         }
 
         private List<Iteration> GetIterationsByType(int projectId, string iterationType)
@@ -308,6 +326,33 @@ namespace PivotalTrackerDotNet
             var stories = new Stories();
             stories.AddRange(el.Select(storey => storey.ToObject<Story>()));
             return stories;
+        }
+
+        private IEnumerable<string> GetFieldsNames(StoryIncludeFields fields)
+        {
+            if (fields.HasFlag(StoryIncludeFields.AfterId))
+                yield return "after_id";
+
+            if (fields.HasFlag(StoryIncludeFields.BeforeId))
+                yield return "before_id";
+
+            if (fields.HasFlag(StoryIncludeFields.CommentIds))
+                yield return "comment_ids";
+
+            if (fields.HasFlag(StoryIncludeFields.Comments))
+                yield return "comments";
+
+            if (fields.HasFlag(StoryIncludeFields.FollowerIds))
+                yield return "follower_ids";
+
+            if (fields.HasFlag(StoryIncludeFields.Followers))
+                yield return "followers";
+
+            if (fields.HasFlag(StoryIncludeFields.TaskIds))
+                yield return "task_ids";
+
+            if (fields.HasFlag(StoryIncludeFields.Tasks))
+                yield return "tasks";
         }
     }
 }

@@ -63,6 +63,40 @@ namespace PivotalTrackerDotNet.Tests
         }
 
         [Test]
+        public void CanRetrieveSingleStoryWithFields()
+        {
+            var savedStory = this.storyService.AddNewStory(Constants.ProjectId, new Story
+                                                                               {
+                                                                                   Name          = "Nouvelle histoire",
+                                                                                   RequestedById = Constants.UserId,
+                                                                                   StoryType     = StoryType.Feature,
+                                                                                   Description   = "bla bla bla and more bla",
+                                                                                   ProjectId     = Constants.ProjectId,
+                                                                                   Estimate      = 2,
+                                                                               });
+            this.storyService.AddNewTask(new Task
+            {
+                Description = "wololo",
+                StoryId     = savedStory.Id,
+                ProjectId   = savedStory.ProjectId
+            });
+
+            this.storyService.AddComment(savedStory.ProjectId, savedStory.Id, "Comment 1");
+            this.storyService.AddComment(savedStory.ProjectId, savedStory.Id, "Comment 2");
+
+            var retrieved = this.storyService.GetStory(Constants.ProjectId, savedStory.Id, StoryIncludeFields.Tasks | StoryIncludeFields.Comments);
+            Assert.NotNull(retrieved);
+            Assert.AreEqual(Constants.ProjectId, retrieved.ProjectId);
+            Assert.AreEqual(savedStory.Id, retrieved.Id);
+            Assert.AreEqual(savedStory.StoryType, retrieved.StoryType);
+            Assert.AreEqual(savedStory.Name, retrieved.Name);
+            Assert.AreEqual(savedStory.Estimate, retrieved.Estimate);
+            Assert.AreEqual(1, retrieved.Tasks.Count);
+            Assert.AreEqual(savedStory.Id, retrieved.Tasks[0].StoryId);
+            Assert.AreEqual(2, retrieved.Comments.Count);
+        }
+
+        [Test]
         public void CanRetrieveAllStories()
         {
             var story = new Story
