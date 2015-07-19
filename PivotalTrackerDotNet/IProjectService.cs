@@ -10,6 +10,8 @@ namespace PivotalTrackerDotNet
 
         List<Activity> GetRecentActivity(int projectId, int limit);
 
+        PagedResult<Activity> GetActivity(int projectId, int offset, int limit);
+
         List<Project> GetProjects();
 
         List<Project> GetProjects(params int[] accountIds);
@@ -33,5 +35,7 @@ namespace PivotalTrackerDotNet
         List<Integration> GetProjectIntegrations(int projectId);
 
         List<Epic> GetAllProjectEpics(int projectId);
+
+        List<Activity> GetEpicActivities(int projectId, int epicId);
     }
 }

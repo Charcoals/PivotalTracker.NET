@@ -84,7 +84,7 @@ namespace PivotalTrackerDotNet.Tests
             Assert.AreEqual(StoryType.Feature, stories[0].StoryType);
         }
 
-        [Test, Ignore("The code works, but the lag from pivotal is such that it requires to sleep for close to a minute to pass")]
+        [Test] //, Ignore("The code works, but the lag from pivotal is such that it requires to sleep for close to a minute to pass")]
         public void CanRetrieveAllStories_Paging()
         {
             var story = new Story
@@ -107,15 +107,19 @@ namespace PivotalTrackerDotNet.Tests
 
             this.storyService.AddNewStory(Constants.ProjectId, story);
             this.storyService.AddNewStory(Constants.ProjectId, story2);
-            System.Threading.Thread.Sleep(30000); // There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
+            //// System.Threading.Thread.Sleep(30000); // There is a lag in pivotal tracker's filter search. removing the slepp will cause the test to fail occasionally
 
             var stories = this.storyService.GetAllStories(Constants.ProjectId, 2, 0);
             Assert.NotNull(stories);
-            Assert.AreEqual(2, stories.Count);
+            Assert.AreEqual(2, stories.Data.Count);
+            Assert.AreEqual(2, stories.Pagination.Returned);
+            Assert.AreEqual(2, stories.Pagination.Total);
 
             stories = this.storyService.GetAllStories(Constants.ProjectId, 1, 1);
             Assert.NotNull(stories);
-            Assert.AreEqual(1, stories.Count);
+            Assert.AreEqual(1, stories.Data.Count);
+            Assert.AreEqual(1, stories.Pagination.Returned);
+            Assert.AreEqual(2, stories.Pagination.Total);
         }
 
         [Test]
@@ -382,6 +386,13 @@ namespace PivotalTrackerDotNet.Tests
             var iterations = this.storyService.GetAllIterations(Constants.ProjectId);
             Assert.Greater(iterations.Count, 0);
             Assert.NotNull(iterations[0].StartDate);
+        }
+
+        [Test]
+        public void CanGetStoryActivity()
+        {
+            var activities = this.storyService.GetStoryActivity(Constants.ProjectId, 99372018);
+            Assert.Greater(activities.Count, 0);
         }
 
         private static void VerifyStory(Story expected, Story actual)

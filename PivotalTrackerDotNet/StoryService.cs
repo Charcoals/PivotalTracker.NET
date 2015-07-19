@@ -12,14 +12,12 @@ namespace PivotalTrackerDotNet
         private const string SingleStoryEndpoint           = "projects/{0}/stories/{1}";
         private const string StoriesEndpoint               = "projects/{0}/stories";
         private const string TaskEndpoint                  = "projects/{0}/stories/{1}/tasks";
+        private const string StoryActivityEndpoint         = "projects/{0}/stories/{1}/activity";
         private const string SaveNewCommentEndpoint        = "projects/{0}/stories/{1}/notes?note[text]={2}";
-        private const string SingleTaskEndpoint            = "projects/{0}/stories/{1}/tasks/{2}"; // projects/$PROJECT_ID/stories/$STORY_ID/tasks/$TASK_ID
+        private const string SingleTaskEndpoint            = "projects/{0}/stories/{1}/tasks/{2}";
         private const string StoryStateEndpoint            = "projects/{0}/stories/{1}?story[current_state]={2}";
         private const string StoryFilterEndpoint           = StoriesEndpoint + "?filter={1}";
-        private const string StoryPaginationEndpoint       = StoriesEndpoint + "?limit={1}&offset={2}";
-        private const string StoryFilterPaginationEndpoint = StoryFilterEndpoint + "&limit={2}&offset={3}";
         private const string IterationEndPoint             = "projects/{0}/iterations";
-        private const string IterationPaginationEndPoint   = IterationEndPoint + "?offset={1}&limit={2}";
         private const string IterationRecentEndPoint       = IterationEndPoint + "/done?offset=-{1}";
 
         public StoryService(string token) : base(token)
@@ -30,7 +28,7 @@ namespace PivotalTrackerDotNet
         {
         }
 
-        public List<Story> GetAllStories(int projectId, bool addTask = true)
+        public List<Story> GetAllStories(int projectId)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(StoriesEndpoint, projectId);
@@ -38,15 +36,15 @@ namespace PivotalTrackerDotNet
             return this.GetStories(request);
         }
 
-        public List<Story> GetAllStories(int projectId, int limit, int offset, bool addTask = true)
+        public PagedResult<Story> GetAllStories(int projectId, int limit, int offset)
         {
-            var request = BuildGetRequest();
-            request.Resource = string.Format(StoryPaginationEndpoint, projectId, limit, offset);
+            var request = this.BuildGetRequest(string.Format(StoriesEndpoint, projectId))
+                              .SetPagination(offset, limit);
 
-            return this.GetStories(request);
+            return this.RestClient.ExecuteRequestWithChecks<PagedResult<Story>>(request);
         }
 
-        public List<Story> GetAllStoriesMatchingFilter(int projectId, string filter, bool addTask = true)
+        public List<Story> GetAllStoriesMatchingFilter(int projectId, string filter)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(StoryFilterEndpoint, projectId, filter);
@@ -54,15 +52,15 @@ namespace PivotalTrackerDotNet
             return this.GetStories(request);
         }
 
-        public List<Story> GetAllStoriesMatchingFilter(int projectId, string filter, int limit, int offset, bool addTask = true)
+        public PagedResult<Story> GetAllStoriesMatchingFilter(int projectId, string filter, int limit, int offset)
         {
-            var request = BuildGetRequest();
-            request.Resource = string.Format(StoryFilterPaginationEndpoint, projectId, filter, limit, offset);
+            var request = this.BuildGetRequest(string.Format(StoryFilterEndpoint, projectId, filter))
+                              .SetPagination(offset, limit);
 
-            return this.GetStories(request);
+            return this.RestClient.ExecuteRequestWithChecks<PagedResult<Story>>(request);
         }
 
-        public List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter, int limit, int offset)
+        public PagedResult<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter, int limit, int offset)
         {
             return this.GetAllStoriesMatchingFilter(projectId, filter.ToString(), limit, offset);
         }
@@ -110,12 +108,12 @@ namespace PivotalTrackerDotNet
             return this.GetIteration(request);
         }
 
-        public List<Iteration> GetAllIterations(int projectId, int limit, int offset)
+        public PagedResult<Iteration> GetAllIterations(int projectId, int limit, int offset)
         {
-            var request = BuildGetRequest();
-            request.Resource = string.Format(IterationPaginationEndPoint, projectId, offset, limit);
+            var request = this.BuildGetRequest(string.Format(IterationEndPoint, projectId))
+                              .SetPagination(offset, limit);
 
-            return this.GetIteration(request);
+            return this.RestClient.ExecuteRequestWithChecks<PagedResult<Iteration>>(request);
         }
 
         public List<Iteration> GetLastIterations(long projectId, int number)
@@ -235,11 +233,16 @@ namespace PivotalTrackerDotNet
             return output;
         }
 
-        public List<Task> GetTasksForStory(int projectId, Story story)
+        public List<Task> GetTasksForStory(int projectId, int storyId)
         {
             var request = this.BuildGetRequest();
-            request.Resource = string.Format(TaskEndpoint, projectId, story.Id);
+            request.Resource = string.Format(TaskEndpoint, projectId, storyId);
             return RestClient.ExecuteRequestWithChecks<List<Task>>(request);
+        }
+
+        public List<Task> GetTasksForStory(int projectId, Story story)
+        {
+            return this.GetTasksForStory(projectId, story.Id);
         }
 
         public void AddComment(int projectId, int storyId, string comment)
@@ -247,6 +250,21 @@ namespace PivotalTrackerDotNet
             var request = BuildPostRequest();
             request.Resource = string.Format(SaveNewCommentEndpoint, projectId, storyId, comment);
             RestClient.ExecuteRequestWithChecks(request);
+        }
+
+        public List<Activity> GetStoryActivity(int projectId, int storyId)
+        {
+            var request = this.BuildGetRequest(string.Format(StoryActivityEndpoint, projectId, storyId));
+
+            return RestClient.ExecuteRequestWithChecks<List<Activity>>(request);
+        }
+
+        public PagedResult<Activity> GetStoryActivity(int projectId, int storyId, int offset, int limit)
+        {
+            var request = this.BuildGetRequest(string.Format(StoryActivityEndpoint, projectId, storyId))
+                              .SetPagination(offset, limit);
+
+            return RestClient.ExecuteRequestWithChecks<PagedResult<Activity>>(request);
         }
 
         private Story FindStory(int projectId, int storyId)

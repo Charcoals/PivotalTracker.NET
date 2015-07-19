@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Globalization;
 
 using PivotalTrackerDotNet.Domain;
 
@@ -34,11 +35,15 @@ namespace PivotalTrackerDotNet
             get { return this.restClient; }
         }
 
-        protected RestRequest BuildGetRequest()
+        protected RestRequest BuildGetRequest(string uri = null)
         {
             var request = new RestRequest(Method.GET);
             request.AddHeader("X-TrackerToken", this.Token);
             request.RequestFormat = DataFormat.Json;
+
+            if (!string.IsNullOrEmpty(uri))
+                request.Resource = uri;
+
             return request;
         }
 

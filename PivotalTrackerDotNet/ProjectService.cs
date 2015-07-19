@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 using PivotalTrackerDotNet.Domain;
@@ -15,8 +16,9 @@ namespace PivotalTrackerDotNet
         private const string ProjectMembershipsEndpoint     = "projects/{0}/memberships";
         private const string ProjectWebHooksEndpoint        = "projects/{0}/webhooks";
         private const string ProjectIntegrationsEndpoint    = "projects/{0}/integrations";
-        private const string AcitivityEndpoint              = "projects/{0}/activity?limit={1}";
+        private const string AcitivityEndpoint              = "projects/{0}/activity";
         private const string ProjectEpics                   = "projects/{0}/epics";
+        private const string ProjectEpicActivities          = "projects/{0}/epics/{1}/activity";
 
         public ProjectService(string token) : base(token)
         {
@@ -33,10 +35,16 @@ namespace PivotalTrackerDotNet
 
         public List<Activity> GetRecentActivity(int projectId, int limit)
         {
-            var request = BuildGetRequest();
-            request.Resource = string.Format(AcitivityEndpoint, projectId, limit);
-            var response = RestClient.Execute<List<Activity>>(request);
-            return response.Data;
+            return this.GetActivity(projectId, 0, limit).ToList();
+        }
+
+        public PagedResult<Activity> GetActivity(int projectId, int offset, int limit)
+        {
+            var request = this.BuildGetRequest(string.Format(AcitivityEndpoint, projectId))
+                              .SetPagination(offset, limit);
+
+            var response = RestClient.ExecuteRequestWithChecks<PagedResult<Activity>>(request);
+            return response;
         }
 
         public List<Project> GetProjects()
@@ -148,6 +156,14 @@ namespace PivotalTrackerDotNet
             request.Resource = string.Format(ProjectEpics, projectId);
 
             return RestClient.ExecuteRequestWithChecks<List<Epic>>(request);
+        }
+
+        public List<Activity> GetEpicActivities(int projectId, int epicId)
+        {
+            var request = BuildGetRequest();
+            request.Resource = string.Format(ProjectEpicActivities, projectId, epicId);
+
+            return RestClient.ExecuteRequestWithChecks<List<Activity>>(request);
         }
 
         private IEnumerable<string> GetFieldsNames(ProjectIncludeFields fields)

@@ -61,5 +61,12 @@ namespace PivotalTrackerDotNet.Tests
             var integrations = this.service.GetProjectIntegrations(456295);
             Assert.IsNotNull(integrations);
         }
+
+        [Test]
+        public void GetProjectActivity()
+        {
+            var activities = this.service.GetRecentActivity(456295);
+            Assert.IsNotNull(activities);
+        }
     }
 }
