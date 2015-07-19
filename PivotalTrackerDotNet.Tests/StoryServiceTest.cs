@@ -389,10 +389,10 @@ namespace PivotalTrackerDotNet.Tests
         }
 
         [Test]
-        public void CanGetStoryActivity()
+        [ExpectedException(typeof(PivotalTrackerResourceNotFoundException))]
+        public void StoryNotFoundThrowsException()
         {
-            var activities = this.storyService.GetStoryActivity(Constants.ProjectId, 99372018);
-            Assert.Greater(activities.Count, 0);
+            var result = this.storyService.GetStory(Constants.ProjectId, 1234);
         }
 
         private static void VerifyStory(Story expected, Story actual)
