@@ -51,7 +51,7 @@
   <ItemGroup>
     <Compile Include="AAuthenticatedService.cs" />
     <Compile Include="AuthenticationService.cs" />
-    <Compile Include="Domain\Account.cs" />
+    <Compile Include="Domain\Me.cs" />
     <Compile Include="Domain\AccountingType.cs" />
     <Compile Include="Domain\Change.cs" />
     <Compile Include="Domain\ChangeKind.cs" />

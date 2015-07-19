@@ -4,6 +4,6 @@ namespace PivotalTrackerDotNet
 {
     public interface IAuthenticationService
     {
-        Account GetAccount();
+        Me GetAccount();
     }
 }

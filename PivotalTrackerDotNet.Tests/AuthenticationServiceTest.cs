@@ -50,27 +50,27 @@ namespace PivotalTrackerDotNet.Tests
             VerifyAccount(account);
         }
 
-        private static void VerifyAccount(Account account)
+        private static void VerifyAccount(Me me)
         {
-            Assert.IsNotNull(account);
-            Assert.AreNotEqual(0, account.Id);
-            Assert.IsNotNullOrEmpty(account.Email);
-            Assert.IsNotNullOrEmpty(account.Initials);
-            Assert.IsNotNullOrEmpty(account.Kind);
-            Assert.IsNotNullOrEmpty(account.Name);
-            Assert.IsNotNullOrEmpty(account.Username);
-            Assert.IsNotNullOrEmpty(account.ApiToken);
-            Assert.Greater(account.CreatedAt, DateTimeOffset.MinValue);
-            Assert.Greater(account.UpdatedAt, DateTimeOffset.MinValue);
-            Assert.IsNotNull(account.TimeZone);
-            Assert.IsNotNull(account.TimeZone.Kind);
-            Assert.IsNotNull(account.TimeZone.Offset);
-            Assert.IsNotNull(account.TimeZone.OlsonName);
-            Assert.AreNotEqual(Guid.Empty.ToString(), account.ApiToken);
-            Assert.IsNotNull(account.Projects);
-            Assert.AreEqual(2, account.Projects.Count);
+            Assert.IsNotNull(me);
+            Assert.AreNotEqual(0, me.Id);
+            Assert.IsNotNullOrEmpty(me.Email);
+            Assert.IsNotNullOrEmpty(me.Initials);
+            Assert.IsNotNullOrEmpty(me.Kind);
+            Assert.IsNotNullOrEmpty(me.Name);
+            Assert.IsNotNullOrEmpty(me.Username);
+            Assert.IsNotNullOrEmpty(me.ApiToken);
+            Assert.Greater(me.CreatedAt, DateTimeOffset.MinValue);
+            Assert.Greater(me.UpdatedAt, DateTimeOffset.MinValue);
+            Assert.IsNotNull(me.TimeZone);
+            Assert.IsNotNull(me.TimeZone.Kind);
+            Assert.IsNotNull(me.TimeZone.Offset);
+            Assert.IsNotNull(me.TimeZone.OlsonName);
+            Assert.AreNotEqual(Guid.Empty.ToString(), me.ApiToken);
+            Assert.IsNotNull(me.Projects);
+            Assert.AreEqual(2, me.Projects.Count);
 
-            foreach (var project in account.Projects)
+            foreach (var project in me.Projects)
             {
                 Assert.AreNotEqual(0, project.Id);
                 Assert.AreNotEqual(0, project.ProjectId);

@@ -31,7 +31,7 @@ namespace PivotalTrackerDotNet
             return response;
         }
 
-        public static Account GetAccount(string username, string password)
+        public static Me GetAccount(string username, string password)
         {
             var client = new RestClient(PivotalTrackerRestEndpoint.SSLENDPOINT)
                              {
@@ -39,16 +39,16 @@ namespace PivotalTrackerDotNet
                              };
 
             var request  = new RestRequest(AuthenticationEndpoint);
-            var response = client.ExecuteRequestWithChecks<Account>(request);
+            var response = client.ExecuteRequestWithChecks<Me>(request);
 
             return response;
         }
 
-        public Account GetAccount()
+        public Me GetAccount()
         {
             var request = this.BuildGetRequest();
             request.Resource = AuthenticationEndpoint;
-            var account = RestClient.ExecuteRequestWithChecks<Account>(request);
+            var account = RestClient.ExecuteRequestWithChecks<Me>(request);
             return account;
         }
     }

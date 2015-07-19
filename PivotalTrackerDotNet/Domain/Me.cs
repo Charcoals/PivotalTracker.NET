@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace PivotalTrackerDotNet.Domain
 {
-    public class Account
+    public class Me
     {
-        public Account()
+        public Me()
         {
             this.Projects = new List<MembershipSummary>();
         }
