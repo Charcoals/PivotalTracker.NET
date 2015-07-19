@@ -1,3 +1,5 @@
+using System;
+
 using Newtonsoft.Json.Linq;
 
 namespace PivotalTrackerDotNet.Domain
@@ -5,11 +7,16 @@ namespace PivotalTrackerDotNet.Domain
     public class Task
     {
         public int Id { get; set; }
+        public int StoryId { get; set; }
         public string Description { get; set; }
         public bool Complete { get; set; }
-        public int StoryId { get; set; }
-        public int ProjectId { get; set; }
         public int Position { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; }
+        public string Kind { get; set; }
+
+        public int ProjectId { get; set; } // TODO: Remove, not part of api
+        
 
         public string GetIdToken()
         {
