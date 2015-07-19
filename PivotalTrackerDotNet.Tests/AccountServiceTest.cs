@@ -8,46 +8,46 @@ namespace PivotalTrackerDotNet.Tests
 {
     // ReSharper disable InconsistentNaming
     [TestFixture]
-    public class AuthenticationServiceTest
+    public class AccountServiceTest
     {
         [Test]
-        public void CanAuthenticateWithValidCredentials()
+        public void CanGetAccounts()
         {
-            var token = AuthenticationService.Authenticate(Constants.Username, Constants.Password);
-            Assert.IsNotNull(token);
-            Assert.IsNotNull(token.Guid);
-            Assert.AreNotEqual(Guid.Empty, token.Guid);
+            var service = new AccountService(Constants.ApiToken);
+            var accounts = service.GetAccounts();
+            Assert.Greater(accounts.Count, 0);
+        }
+
+        [Test]
+        public void CanGetAccountFromClient()
+        {
+            var client = new PivotalTrackerClient(Constants.ApiToken);
+            var accounts = client.Account.GetAccounts();
+            Assert.Greater(accounts.Count, 0);
         }
 
         [Test]
         public void CanGetAccount()
         {
-            var account = AuthenticationService.GetAccount(Constants.Username, Constants.Password);
-            VerifyAccount(account);
+            var service = new AccountService(Constants.ApiToken);
+            var account = service.GetAccount(Constants.AccountId);
+            Assert.IsNotNull(account);
         }
 
         [Test]
-        public void CanGetAccountFromService()
+        public void CanGetAccountSummaries()
         {
-            var service = new AuthenticationService(Constants.ApiToken);
-            var account = service.GetAccount();
-            VerifyAccount(account);
+            var service = new AccountService(Constants.ApiToken);
+            var accountSummaries = service.GetAccountSummaries();
+            Assert.Greater(accountSummaries.Count, 0);
         }
 
         [Test]
-        public void CanGetAccountFromClient_ApiToken()
+        public void CanGetAccountMemberships()
         {
-            var client = new PivotalTrackerClient(Constants.ApiToken);
-            var account = client.Authentication.GetAccount();
-            VerifyAccount(account);
-        }
-
-        [Test]
-        public void CanGetAccountFromClient_UserNamePassword()
-        {
-            var client = new PivotalTrackerClient(Constants.Username, Constants.Password);
-            var account = client.Authentication.GetAccount();
-            VerifyAccount(account);
+            var service = new AccountService(Constants.ApiToken);
+            var memberships = service.GetAccountMemberships(Constants.AccountId);
+            Assert.Greater(memberships.Count, 0);
         }
 
         private static void VerifyAccount(Me me)

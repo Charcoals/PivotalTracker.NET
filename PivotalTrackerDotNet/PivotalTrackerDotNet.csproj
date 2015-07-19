@@ -50,7 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AAuthenticatedService.cs" />
+    <Compile Include="AccountService.cs" />
     <Compile Include="AuthenticationService.cs" />
+    <Compile Include="Domain\Account.cs" />
+    <Compile Include="Domain\AccountMembership.cs" />
+    <Compile Include="Domain\AccountPermissions.cs" />
+    <Compile Include="Domain\AccountStatus.cs" />
+    <Compile Include="Domain\AccountSummary.cs" />
     <Compile Include="Domain\Me.cs" />
     <Compile Include="Domain\AccountingType.cs" />
     <Compile Include="Domain\Change.cs" />
@@ -76,6 +82,8 @@
     <Compile Include="Domain\PrimaryResource.cs" />
     <Compile Include="Domain\ProjectReference.cs" />
     <Compile Include="Domain\ResourceKind.cs" />
+    <Compile Include="IAccountService.cs" />
+    <Compile Include="IPivotalTrackerClient.cs" />
     <Compile Include="PivotalTrackerException.cs" />
     <Compile Include="PivotalTrackerResourceNotFoundException.cs" />
     <Compile Include="ProjectIncludeFields.cs" />

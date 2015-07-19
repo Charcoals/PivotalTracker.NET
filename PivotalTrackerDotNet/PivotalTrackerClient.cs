@@ -4,13 +4,14 @@ using PivotalTrackerDotNet.Domain;
 
 namespace PivotalTrackerDotNet
 {
-    public class PivotalTrackerClient
+    public class PivotalTrackerClient : IPivotalTrackerClient
     {
         private readonly string token;
-        private Lazy<IAuthenticationService> authenticationService;
-        private Lazy<IStoryService> storyService;
-        private Lazy<IMembershipService> membershipsService;
-        private Lazy<IProjectService> projectService;
+        private readonly Lazy<IAuthenticationService> authenticationService;
+        private readonly Lazy<IAccountService> accountService;
+        private readonly Lazy<IStoryService> storyService;
+        private readonly Lazy<IMembershipService> membershipsService;
+        private readonly Lazy<IProjectService> projectService;
 
         public PivotalTrackerClient(string token) : this()
         {
@@ -32,14 +33,20 @@ namespace PivotalTrackerDotNet
         private PivotalTrackerClient()
         {
             this.authenticationService  = new Lazy<IAuthenticationService>(() => new AuthenticationService(this.token));
+            this.accountService         = new Lazy<IAccountService>(() => new AccountService(this.token));
             this.storyService           = new Lazy<IStoryService>(() => new StoryService(this.token));
             this.membershipsService     = new Lazy<IMembershipService>(() => new MembershipService(this.token));
             this.projectService         = new Lazy<IProjectService>(() => new ProjectService(this.token));
         }
 
-        public IAuthenticationService Account
+        public IAuthenticationService Authentication
         {
             get { return this.authenticationService.Value; }
+        }
+
+        public IAccountService Account
+        {
+            get { return this.accountService.Value; }
         }
 
         public IStoryService Stories
