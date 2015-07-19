@@ -56,7 +56,10 @@
     <Compile Include="Domain\Change.cs" />
     <Compile Include="Domain\ChangeKind.cs" />
     <Compile Include="Domain\ChangeType.cs" />
+    <Compile Include="Domain\Comment.cs" />
     <Compile Include="Domain\CountsByStoryState.cs" />
+    <Compile Include="Domain\FileAttachment.cs" />
+    <Compile Include="Domain\GoogleAttachment.cs" />
     <Compile Include="Domain\Integration.cs" />
     <Compile Include="Domain\IntegrationType.cs" />
     <Compile Include="Domain\MembershipSummary.cs" />
@@ -77,7 +80,6 @@
     <Compile Include="PivotalTrackerResourceNotFoundException.cs" />
     <Compile Include="ProjectIncludeFields.cs" />
     <Compile Include="Domain\ProjectMembership.cs" />
-    <Compile Include="Domain\Note.cs" />
     <Compile Include="Domain\Person.cs" />
     <Compile Include="Domain\Project.cs" />
     <Compile Include="Domain\ProjectRole.cs" />

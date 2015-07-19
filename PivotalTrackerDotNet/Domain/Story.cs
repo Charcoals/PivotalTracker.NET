@@ -10,34 +10,56 @@ namespace PivotalTrackerDotNet.Domain
     {
         public Story()
         {
-            this.Notes  = new List<Note>();
             this.Labels = new List<Label>();
         }
 
         public int Id { get; set; }
         public int ProjectId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+
         [JsonProperty(PropertyName = "story_type")]
         public StoryType StoryType { get; set; }
-        public int? Estimate { get; set; }
+
         public StoryStatus CurrentState { get; set; }
-        public string Description { get; set; }
-        public string Name { get; set; }
-        public List<Label> Labels { get; set; }
+        public int? Estimate { get; set; }
+        public DateTimeOffset? AcceptedAt { get; set; }
+        public DateTimeOffset? Deadline { get; set; }
+
         public int RequestedById { get; set; }
-        public List<Note> Notes { get; set; }
-        public string CreatedAt { get; set; }
-        public string AcceptedAt { get; set; }
+        public Person RequestedBy { get; set; }
+
+        [Obsolete]
+        public int OwnedById { get; set; }
+
+        public List<int> OwnerIds { get; set; }
+        public List<Person> Owners { get; set; }
+
+        public List<int> LabelIds { get; set; }
+        public List<Label> Labels { get; set; }
+
+        public List<int> TaskIds { get; set; } // This field is excluded by default
+        public List<Task> Tasks { get; set; } // This field is excluded by default
+
+        public List<int> FollowerIds { get; set; } // This field is excluded by default
+        public List<Task> Followers { get; set; } // This field is excluded by default
+
+        public List<int> CommentIds { get; set; } // This field is excluded by default
+        public List<Comment> Comments { get; set; } // This field is excluded by default
+
+        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; }
+
+        // Unimplemented
+        public int? BeforeId { get; set; } // This field is excluded by default
+
+        // Unimplemented
+        public int? AfterId { get; set; } // This field is excluded by default
+
+        public int? IntegrationId { get; set; }
+        public string ExternalId { get; set; }
         public string Url { get; set; }
-
-        public DateTime? CreatedOn
-        {
-            get { return CreatedAt.ConvertTime(); }
-        }
-
-        public DateTime? AcceptedOn
-        {
-            get { return AcceptedAt.ConvertTime(); }
-        }
+        public string Kind { get; set; }
 
         public string ToJson()
         {

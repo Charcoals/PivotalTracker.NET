@@ -8,6 +8,7 @@
         Finished, 
         Delivered, 
         Accepted, 
-        Rejected
+        Rejected,
+        Planned
     }
 }
