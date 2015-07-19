@@ -73,6 +73,8 @@
     <Compile Include="Domain\PrimaryResource.cs" />
     <Compile Include="Domain\ProjectReference.cs" />
     <Compile Include="Domain\ResourceKind.cs" />
+    <Compile Include="PivotalTrackerException.cs" />
+    <Compile Include="PivotalTrackerResourceNotFoundException.cs" />
     <Compile Include="ProjectIncludeFields.cs" />
     <Compile Include="Domain\ProjectMembership.cs" />
     <Compile Include="Domain\Note.cs" />
