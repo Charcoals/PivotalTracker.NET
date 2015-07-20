@@ -13,6 +13,8 @@ namespace PivotalTrackerDotNet
         CommentIds                  = 16,
         Comments                    = 32,
         BeforeId                    = 64,
-        AfterId                     = 128
+        AfterId                     = 128,
+        OwnerIds                    = 256,
+        //Owners                      = 512
     }
 }

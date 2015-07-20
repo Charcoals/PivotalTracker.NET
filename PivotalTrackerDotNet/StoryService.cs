@@ -37,6 +37,23 @@ namespace PivotalTrackerDotNet
             return this.GetStories(request);
         }
 
+        public List<Story> GetAllStories(int projectId, StoryIncludeFields fields)
+        {
+            var request = BuildGetRequest();
+            request.Resource = string.Format(StoriesEndpoint, projectId);
+
+            string fieldsQuery = ":default";
+
+            var fieldsToInclude = this.GetFieldsNames(fields);
+            
+            if (fieldsToInclude.Any())
+                fieldsQuery += "," + string.Join(",", fieldsToInclude);
+            
+            request.AddQueryParameter("fields", fieldsQuery);
+
+            return this.GetStories(request);
+        }
+
         public PagedResult<Story> GetAllStories(int projectId, int limit, int offset)
         {
             var request = this.BuildGetRequest(string.Format(StoriesEndpoint, projectId))
@@ -321,11 +338,12 @@ namespace PivotalTrackerDotNet
 
         private List<Story> GetStories(RestRequest request)
         {
-            var el = RestClient.ExecuteRequestWithChecks(request);
+            return RestClient.ExecuteRequestWithChecks<List<Story>>(request);
+            //var el = RestClient.ExecuteRequestWithChecks<List<Story>>(request);
 
-            var stories = new Stories();
-            stories.AddRange(el.Select(storey => storey.ToObject<Story>()));
-            return stories;
+            //var stories = new Stories();
+            //stories.AddRange(el.Select(storey => storey.ToObject<Story>()));
+            //return stories;
         }
 
         private IEnumerable<string> GetFieldsNames(StoryIncludeFields fields)
@@ -353,6 +371,12 @@ namespace PivotalTrackerDotNet
 
             if (fields.HasFlag(StoryIncludeFields.Tasks))
                 yield return "tasks";
+
+            if (fields.HasFlag(StoryIncludeFields.OwnerIds))
+                yield return "owner_ids";
+
+            //if (fields.HasFlag(StoryIncludeFields.Owners))
+            //    yield return "owners";
         }
     }
 }

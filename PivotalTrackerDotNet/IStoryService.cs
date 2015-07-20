@@ -18,6 +18,7 @@ namespace PivotalTrackerDotNet
         List<Story> GetIceboxStories(int projectId);
         List<Story> GetBacklogStories(int projectId);
         List<Story> GetAllStories(int projectId);
+        List<Story> GetAllStories(int projectId, StoryIncludeFields fields);
         PagedResult<Story> GetAllStories(int projectId, int limit, int offset);
         List<Story> GetAllStoriesMatchingFilter(int projectId, string filter);
         List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter);

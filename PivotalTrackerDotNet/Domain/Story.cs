@@ -32,18 +32,23 @@ namespace PivotalTrackerDotNet.Domain
         [Obsolete]
         public int OwnedById { get; set; }
 
+        [JsonProperty(PropertyName = "owner_ids")]
         public List<int> OwnerIds { get; set; }
-        public List<Person> Owners { get; set; }
+        // public List<Person> Owners { get; set; } // Documented but doesn't look like it is ever returned
 
+        [JsonProperty(PropertyName = "label_ids")]
         public List<int> LabelIds { get; set; }
         public List<Label> Labels { get; set; }
 
+        [JsonProperty(PropertyName = "task_ids")]
         public List<int> TaskIds { get; set; } // This field is excluded by default
         public List<Task> Tasks { get; set; } // This field is excluded by default
 
+        [JsonProperty(PropertyName = "follower_ids")]
         public List<int> FollowerIds { get; set; } // This field is excluded by default
         public List<Task> Followers { get; set; } // This field is excluded by default
 
+        [JsonProperty(PropertyName = "comment_ids")]
         public List<int> CommentIds { get; set; } // This field is excluded by default
         public List<Comment> Comments { get; set; } // This field is excluded by default
 
@@ -67,6 +72,7 @@ namespace PivotalTrackerDotNet.Domain
                                 new JProperty("story_type", StoryType.ToString().ToLower()),
                                 new JProperty("description", Description),
                                 new JProperty("requested_by_id", RequestedById),
+                                new JProperty("owner_ids", new JArray(OwnerIds)),                                
                                 new JProperty("labels", new JArray(Labels.Select(l => l.Name))));
 
             if (Estimate.HasValue)

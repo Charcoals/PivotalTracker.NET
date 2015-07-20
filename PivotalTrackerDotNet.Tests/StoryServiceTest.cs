@@ -63,6 +63,25 @@ namespace PivotalTrackerDotNet.Tests
         }
 
         [Test]
+        public void CanRetrieveSingleStoryWithOwner()
+        {
+            var savedStory = this.storyService.AddNewStory(Constants.ProjectId, new Story
+                                                                               {
+                                                                                   Name          = "Nouvelle histoire",
+                                                                                   RequestedById = Constants.UserId,
+                                                                                   StoryType     = StoryType.Feature,
+                                                                                   Description   = "bla bla bla and more bla",
+                                                                                   ProjectId     = Constants.ProjectId,
+                                                                                   Estimate      = 2,
+                                                                                   OwnerIds      = new List<int>() { Constants.UserId }
+                                                                               });
+
+            var retrieved = this.storyService.GetStory(Constants.ProjectId, savedStory.Id, StoryIncludeFields.OwnerIds);
+            Assert.NotNull(retrieved);
+            Assert.AreEqual(savedStory.OwnerIds, retrieved.OwnerIds);
+        }
+
+        [Test]
         public void CanRetrieveSingleStoryWithFields()
         {
             var savedStory = this.storyService.AddNewStory(Constants.ProjectId, new Story
