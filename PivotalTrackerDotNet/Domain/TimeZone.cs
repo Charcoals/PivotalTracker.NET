@@ -15,6 +15,6 @@ namespace PivotalTrackerDotNet.Domain
 
         /// <summary>Gets or sets the offset.</summary>
         /// <value>The offset.</value>
-        public TimeSpan Offset { get; set; }
+        public string Offset { get; set; }
     }
 }
