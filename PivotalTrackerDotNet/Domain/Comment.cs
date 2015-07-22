@@ -10,6 +10,7 @@ namespace PivotalTrackerDotNet.Domain
         public int? EpicId { get; set; }
         public string Text { get; set; }
         public int PersonId { get; set; }
+        public Person Person { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
 
