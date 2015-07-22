@@ -31,6 +31,47 @@ namespace PivotalTrackerDotNet.Tests
         }
 
         [Test]
+        public void CanRetrieveStoriesWithNestedObjects()
+        {
+            var savedStory = this.storyService.AddNewStory(Constants.ProjectId, new Story
+                                                                               {
+                                                                                   Name          = "Nouvelle histoire",
+                                                                                   RequestedById = Constants.UserId,
+                                                                                   StoryType     = StoryType.Feature,
+                                                                                   Description   = "bla bla bla and more bla",
+                                                                                   ProjectId     = Constants.ProjectId,
+                                                                                   Estimate      = 2
+                                                                               });
+
+            this.storyService.AddNewTask(new Task
+            {
+                Description = "wololo",
+                StoryId     = savedStory.Id,
+                ProjectId   = savedStory.ProjectId
+            });
+
+            this.storyService.AddComment(savedStory.ProjectId, savedStory.Id, "Comment 1");
+            this.storyService.AddComment(savedStory.ProjectId, savedStory.Id, "Comment 2");
+
+            var items = storyService.GetAllStories(Constants.ProjectId, StoryIncludeFields.Owners | 
+                                                                        StoryIncludeFields.OwnerIds | 
+                                                                        StoryIncludeFields.Followers | 
+                                                                        StoryIncludeFields.FollowerIds | 
+                                                                        StoryIncludeFields.Comments | 
+                                                                        StoryIncludeFields.Tasks | 
+                                                                        StoryIncludeFields.RequestedBy);
+
+            Assert.AreEqual(1, items.Count);
+            Assert.IsNotNull(items.First().Followers);
+            Assert.IsNotNull(items.First().RequestedBy);
+            Assert.IsNotNull(items.First().Comments);
+            Assert.IsNotNull(items.First().Tasks);
+            Assert.Greater(items.First().Comments.Count, 0);
+            Assert.Greater(items.First().Tasks.Count, 0);
+            items.First().Comments.ForEach(c => Assert.IsNotNull(c.Person));
+        }
+
+        [Test]
         public void CanRetrieveSingleStory()
         {
             var savedStory = this.storyService.AddNewStory(Constants.ProjectId, new Story

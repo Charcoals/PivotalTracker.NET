@@ -15,6 +15,7 @@ namespace PivotalTrackerDotNet
         BeforeId                    = 64,
         AfterId                     = 128,
         OwnerIds                    = 256,
-        //Owners                      = 512
+        Owners                      = 512,
+        RequestedBy                 = 1024,
     }
 }

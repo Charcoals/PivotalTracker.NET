@@ -292,6 +292,11 @@ namespace PivotalTrackerDotNet
         {
             var request = this.BuildGetRequest(string.Format(StoryActivityEndpoint, projectId, storyId));
 
+            //var el = RestClient.ExecuteRequestWithChecks(request);
+            //var activities = new List<Activity>();
+            //activities.AddRange(el.Select(activity => activity.ToObject<Activity>()));
+            //return activities;
+
             return RestClient.ExecuteRequestWithChecks<List<Activity>>(request);
         }
 
@@ -354,29 +359,30 @@ namespace PivotalTrackerDotNet
             if (fields.HasFlag(StoryIncludeFields.BeforeId))
                 yield return "before_id";
 
-            if (fields.HasFlag(StoryIncludeFields.CommentIds))
-                yield return "comment_ids";
-
             if (fields.HasFlag(StoryIncludeFields.Comments))
-                yield return "comments";
-
-            if (fields.HasFlag(StoryIncludeFields.FollowerIds))
-                yield return "follower_ids";
+            {
+                yield return "comments(:default,person)";
+            }
+            else if (fields.HasFlag(StoryIncludeFields.CommentIds))
+                yield return "comment_ids";
 
             if (fields.HasFlag(StoryIncludeFields.Followers))
                 yield return "followers";
-
-            if (fields.HasFlag(StoryIncludeFields.TaskIds))
-                yield return "task_ids";
+            else if (fields.HasFlag(StoryIncludeFields.FollowerIds))
+                yield return "follower_ids";
 
             if (fields.HasFlag(StoryIncludeFields.Tasks))
                 yield return "tasks";
+            else if (fields.HasFlag(StoryIncludeFields.TaskIds))
+                yield return "task_ids";
 
-            if (fields.HasFlag(StoryIncludeFields.OwnerIds))
+            if (fields.HasFlag(StoryIncludeFields.Owners))
+                yield return "owners";
+            else if (fields.HasFlag(StoryIncludeFields.OwnerIds))
                 yield return "owner_ids";
 
-            //if (fields.HasFlag(StoryIncludeFields.Owners))
-            //    yield return "owners";
+            if (fields.HasFlag(StoryIncludeFields.RequestedBy))
+                yield return "requested_by";
         }
     }
 }
