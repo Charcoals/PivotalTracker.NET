@@ -8,8 +8,8 @@ namespace PivotalTrackerDotNet.Domain
         public ChangeType ChangeType { get; set; }
         public int Id { get; set; }
 
-        public Dictionary<string, string> NewValues { get; set; }
-        public Dictionary<string, string> OriginalValues { get; set; }
+        public Dictionary<string, object> NewValues { get; set; }
+        public Dictionary<string, object> OriginalValues { get; set; }
 
 
         public string Name { get; set; }
