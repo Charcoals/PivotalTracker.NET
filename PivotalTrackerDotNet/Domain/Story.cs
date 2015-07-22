@@ -26,7 +26,7 @@ namespace PivotalTrackerDotNet.Domain
         public DateTimeOffset? AcceptedAt { get; set; }
         public DateTimeOffset? Deadline { get; set; }
 
-        public int RequestedById { get; set; }
+        public int? RequestedById { get; set; }
         public Person RequestedBy { get; set; }
 
         [Obsolete]
@@ -34,7 +34,7 @@ namespace PivotalTrackerDotNet.Domain
 
         [JsonProperty(PropertyName = "owner_ids")]
         public List<int> OwnerIds { get; set; }
-        // public List<Person> Owners { get; set; } // Documented but doesn't look like it is ever returned
+        public List<Person> Owners { get; set; } // Documented but doesn't look like it is ever returned
 
         [JsonProperty(PropertyName = "label_ids")]
         public List<int> LabelIds { get; set; }
@@ -46,7 +46,7 @@ namespace PivotalTrackerDotNet.Domain
 
         [JsonProperty(PropertyName = "follower_ids")]
         public List<int> FollowerIds { get; set; } // This field is excluded by default
-        public List<Task> Followers { get; set; } // This field is excluded by default
+        public List<Person> Followers { get; set; } // This field is excluded by default
 
         [JsonProperty(PropertyName = "comment_ids")]
         public List<int> CommentIds { get; set; } // This field is excluded by default
