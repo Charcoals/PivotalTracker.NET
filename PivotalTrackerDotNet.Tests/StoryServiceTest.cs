@@ -489,6 +489,176 @@ namespace PivotalTrackerDotNet.Tests
             var result = this.storyService.GetStory(Constants.ProjectId, 1234);
         }
 
+        [Test]
+        public void ActivityProcessingTest()
+        {
+            int storyId;
+
+            {
+                var story = new Story
+                {
+                    Name = "Nouvelle histoire",
+                    RequestedById = Constants.UserId,
+                    StoryType = StoryType.Feature,
+                    Description = "bla bla bla and more bla",
+                    ProjectId = Constants.ProjectId
+                };
+
+                var savedStory = this.storyService.AddNewStory(Constants.ProjectId, story);
+
+                var task1 = new Task { Description = "stuff stuff stuff", StoryId = savedStory.Id, ProjectId = Constants.ProjectId };
+                var task2 = new Task { Description = "stuff stuff stuff", StoryId = savedStory.Id, ProjectId = Constants.ProjectId };
+
+                var savedTask1 = this.storyService.AddNewTask(task1);
+
+                savedStory.Labels = new List<Label>() { "Label1", "Label2" };
+                savedStory.Estimate = 3;
+
+                savedStory = this.storyService.UpdateStory(Constants.ProjectId, savedStory);
+
+                var savedTask2 = this.storyService.AddNewTask(task2);
+
+                this.storyService.AddComment(savedStory.ProjectId, savedStory.Id, "Comment 1");
+                this.storyService.AddComment(savedStory.ProjectId, savedStory.Id, "Comment 2");
+
+                savedStory.Name     = "New story";
+                savedStory.Deadline = DateTimeOffset.Now.AddDays(10);
+                savedStory.Estimate = 3;
+
+                savedStory = this.storyService.UpdateStory(Constants.ProjectId, savedStory);
+
+                storyId = savedStory.Id;
+            }
+
+            var activities = this.storyService.GetStoryActivity(Constants.ProjectId, storyId);
+
+            activities = activities.OrderBy(a => a.OccurredAt).ToList();
+
+            var accumulatedStoryValues      = new Dictionary<string, object>();
+            var accumulatedTasksValues      = new Dictionary<int, Dictionary<string, object>>();
+            var accumulatedCommentValues    = new Dictionary<int, Dictionary<string, object>>();
+            var accumulatedLabelValues      = new Dictionary<int, Dictionary<string, object>>();
+
+            var deserializer = new DictionaryDeserializer();
+
+            var foundObjects = new List<object>();
+
+            foreach (var activity in activities)
+            {
+                foreach (var change in activity.Changes)
+                {
+                    if (change.NewValues != null && change.NewValues.Count == 1 && change.NewValues.ContainsKey("updated_at"))
+                        continue; // Skip story changes without any significat changes
+
+                    switch (change.Kind)
+                    {
+                        case ResourceKind.Story:
+                        {
+                            if (change.NewValues != null)
+                                change.NewValues.ToList().ForEach(kp => accumulatedStoryValues[kp.Key] = kp.Value);
+                            else if (change.OriginalValues != null)
+                                change.OriginalValues.ToList().ForEach(kp => accumulatedStoryValues[kp.Key] = kp.Value);
+
+                            var story = deserializer.Deserialize<Story>(accumulatedStoryValues);
+
+                            if (activity.OccurredAt != DateTimeOffset.MinValue || 
+                                (change.NewValues != null && !change.NewValues.ContainsKey("updated_at")))
+                            {
+                                story.UpdatedAt = activity.OccurredAt;
+                            }
+
+                            foundObjects.Add(story);
+                            break;
+                        }
+
+                        case ResourceKind.Comment:
+                        {
+                            Dictionary<string, object> values;
+                            if (!accumulatedTasksValues.TryGetValue(change.Id, out values))
+                            {
+                                values = accumulatedTasksValues[change.Id] = new Dictionary<string, object>();
+                            }
+
+                            if (change.NewValues != null)
+                                change.NewValues.ToList().ForEach(kp => values[kp.Key] = kp.Value);
+                            else if (change.OriginalValues != null)
+                                change.OriginalValues.ToList().ForEach(kp => values[kp.Key] = kp.Value);
+
+                            var comment = deserializer.Deserialize<Comment>(values);
+
+                            if (activity.OccurredAt != DateTimeOffset.MinValue || 
+                                (change.NewValues != null && !change.NewValues.ContainsKey("updated_at")))
+                            {
+                                comment.UpdatedAt = activity.OccurredAt;
+                            }
+
+                            foundObjects.Add(comment);
+                            break;
+                        }
+
+                        case ResourceKind.Task:
+                        {
+                            Dictionary<string, object> values;
+                            if (!accumulatedCommentValues.TryGetValue(change.Id, out values))
+                            {
+                                values = accumulatedCommentValues[change.Id] = new Dictionary<string, object>();
+                            }
+
+                            if (change.NewValues != null)
+                                change.NewValues.ToList().ForEach(kp => values[kp.Key] = kp.Value);
+                            else if (change.OriginalValues != null)
+                                change.OriginalValues.ToList().ForEach(kp => values[kp.Key] = kp.Value);
+
+                            var task = deserializer.Deserialize<Task>(values);
+
+                            if (activity.OccurredAt != DateTimeOffset.MinValue || 
+                                (change.NewValues != null && !change.NewValues.ContainsKey("updated_at")))
+                            {
+                                task.UpdatedAt = activity.OccurredAt;
+                            }
+
+                            foundObjects.Add(task);
+                            break;
+                        }
+
+                        case ResourceKind.Label:
+                        {
+                            Dictionary<string, object> values;
+                            if (!accumulatedLabelValues.TryGetValue(change.Id, out values))
+                            {
+                                values = accumulatedLabelValues[change.Id] = new Dictionary<string, object>();
+                            }
+
+                            if (change.NewValues != null)
+                                change.NewValues.ToList().ForEach(kp => values[kp.Key] = kp.Value);
+                            else if (change.OriginalValues != null)
+                                change.OriginalValues.ToList().ForEach(kp => values[kp.Key] = kp.Value);
+
+                            var label = deserializer.Deserialize<Label>(values);
+
+                            if (activity.OccurredAt != DateTimeOffset.MinValue || 
+                                (change.NewValues != null && !change.NewValues.ContainsKey("updated_at")))
+                            {
+                                label.UpdatedAt = activity.OccurredAt;
+                            }
+
+                            foundObjects.Add(label);
+                            break;
+                        }
+
+                        default:
+                            throw new Exception("Unhandled resource kind: " + change.Kind);
+                    }
+                }
+            }
+
+            Assert.IsNotEmpty(foundObjects);
+            Assert.AreEqual(4, foundObjects.Where(o => o is Story).Count());
+            Assert.AreEqual(2, foundObjects.Where(o => o is Comment).Count());
+            Assert.AreEqual(2, foundObjects.Where(o => o is Task).Count());
+            Assert.AreEqual(2, foundObjects.Where(o => o is Label).Count());
+        }
+
         private static void VerifyStory(Story expected, Story actual)
         {
             Assert.AreEqual(expected.Id, actual.Id);

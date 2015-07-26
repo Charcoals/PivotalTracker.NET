@@ -18,6 +18,11 @@ namespace PivotalTrackerDotNet
         {
             this.token      = token;
             this.restClient = new RestClient { BaseUrl = new Uri(PivotalTrackerRestEndpoint.SSLENDPOINT) };
+            this.restClient.AddHandler("application/json", new DictionaryDeserializer());
+            this.restClient.AddHandler("text/json", new DictionaryDeserializer());
+            this.restClient.AddHandler("text/x-json", new DictionaryDeserializer());
+            this.restClient.AddHandler("text/javascript", new DictionaryDeserializer());
+            this.restClient.AddHandler("*+json", new DictionaryDeserializer());
         }
 
         protected AAuthenticatedService(AuthenticationToken token) : this(token.Value)

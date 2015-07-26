@@ -126,7 +126,7 @@ namespace PivotalTrackerDotNet
                         currentData = (IDictionary<string, object>)currentData[actualName];
                 }
 
-                if (value != null)
+                if (value != null && value.GetType() != typeof(object))
                     prop.SetValue(target, ConvertValue(type, value), null);
             }
 
@@ -226,7 +226,7 @@ namespace PivotalTrackerDotNet
             {
                 type = value.GetType();
             }
-
+            
             if (type.IsPrimitive)
             {
                 return value.ChangeType(type, Culture);
@@ -337,7 +337,10 @@ namespace PivotalTrackerDotNet
             else if (type == typeof(JsonObject))
             {
                 // simplify JsonObject into a Dictionary<string, object> 
-                return BuildDictionary(typeof(Dictionary<string, object>), value);
+                if (value is IDictionary<string, object>)
+                    return BuildDictionary(typeof(Dictionary<string, object>), value);
+
+                return value;
             }
             else
             {
@@ -355,16 +358,16 @@ namespace PivotalTrackerDotNet
 
             var instance = Activator.CreateInstance(type);
 
-            try
-            {
+            //try
+            //{
                 Map(instance, (IDictionary<string, object>)element);
-            }
-            catch (Exception ex)
-            {
-                // Ignore cast exception
-                // TODO: Fix this
-                Debug.WriteLine("Swallowed exception: " + ex);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Ignore cast exception
+            //    // TODO: Fix this
+            //    Debug.WriteLine("Swallowed exception: " + ex);
+            //}
 
             return instance;
         }

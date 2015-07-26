@@ -292,11 +292,6 @@ namespace PivotalTrackerDotNet
         {
             var request = this.BuildGetRequest(string.Format(StoryActivityEndpoint, projectId, storyId));
 
-            //var el = RestClient.ExecuteRequestWithChecks(request);
-            //var activities = new List<Activity>();
-            //activities.AddRange(el.Select(activity => activity.ToObject<Activity>()));
-            //return activities;
-
             return RestClient.ExecuteRequestWithChecks<List<Activity>>(request);
         }
 
