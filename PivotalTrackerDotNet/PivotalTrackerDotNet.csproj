@@ -58,6 +58,7 @@
     <Compile Include="Domain\AccountPermissions.cs" />
     <Compile Include="Domain\AccountStatus.cs" />
     <Compile Include="Domain\AccountSummary.cs" />
+    <Compile Include="Domain\EpicsSearchResult.cs" />
     <Compile Include="Domain\Me.cs" />
     <Compile Include="Domain\AccountingType.cs" />
     <Compile Include="Domain\Change.cs" />
@@ -83,8 +84,12 @@
     <Compile Include="Domain\PrimaryResource.cs" />
     <Compile Include="Domain\ProjectReference.cs" />
     <Compile Include="Domain\ResourceKind.cs" />
+    <Compile Include="Domain\SearchResult.cs" />
+    <Compile Include="Domain\SearchResultContainer.cs" />
+    <Compile Include="Domain\StoriesSearchResult.cs" />
     <Compile Include="IAccountService.cs" />
     <Compile Include="IPivotalTrackerClient.cs" />
+    <Compile Include="SearchService.cs" />
     <Compile Include="PivotalTrackerException.cs" />
     <Compile Include="PivotalTrackerResourceNotFoundException.cs" />
     <Compile Include="ProjectIncludeFields.cs" />
