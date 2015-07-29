@@ -141,7 +141,7 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(IterationEndPoint, projectId);
 
-            return this.GetIteration(request);
+            return this.GetIterations(request);
         }
 
         public PagedResult<Iteration> GetAllIterations(int projectId, int limit, int offset)
@@ -156,7 +156,7 @@ namespace PivotalTrackerDotNet
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(IterationRecentEndPoint, projectId, number);
-            return this.GetIteration(request);
+            return this.GetIterations(request);
         }
 
         public List<Iteration> GetCurrentIterations(int projectId)
@@ -314,7 +314,7 @@ namespace PivotalTrackerDotNet
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(SpecifiedIterationEndpoint, projectId, iterationType);
-            return this.GetIteration(request);
+            return this.GetIterations(request);
         }
 
         private List<Story> GetStoriesByIterationType(int projectId, string iterationType)
@@ -328,12 +328,9 @@ namespace PivotalTrackerDotNet
             return stories;
         }
 
-        private List<Iteration> GetIteration(RestRequest request)
+        private List<Iteration> GetIterations(RestRequest request)
         {
-            var el = RestClient.ExecuteRequestWithChecks(request);
-            var iterations = new List<Iteration>();
-            iterations.AddRange(el.Select(iteration => iteration.ToObject<Iteration>()));
-            return iterations;
+            return RestClient.ExecuteRequestWithChecks<List<Iteration>>(request);
         }
 
         private List<Story> GetStories(RestRequest request)

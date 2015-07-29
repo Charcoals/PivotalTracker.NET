@@ -6,6 +6,6 @@ namespace PivotalTrackerDotNet
 {
     public interface IMembershipService
     {
-        List<Person> GetMembers(int projectId);
+        List<ProjectMembership> GetMembers(int projectId);
     }
 }

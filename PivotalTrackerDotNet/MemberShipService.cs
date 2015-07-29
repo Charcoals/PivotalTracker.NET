@@ -16,14 +16,12 @@ namespace PivotalTrackerDotNet
         {
         }
 
-        public List<Person> GetMembers(int projectId)
+        public List<ProjectMembership> GetMembers(int projectId)
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(MemberShipEndpoint, projectId);
-            var jObject = RestClient.ExecuteRequestWithChecks(request);
-            var persons = new List<Person>();
-            persons.AddRange(jObject.Select(person => person["person"].ToObject<Person>()));
-            return persons;
+
+            return RestClient.ExecuteRequestWithChecks<List<ProjectMembership>>(request);
         }
     }
 }
