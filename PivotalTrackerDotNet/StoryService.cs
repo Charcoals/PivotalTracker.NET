@@ -392,7 +392,7 @@ namespace PivotalTrackerDotNet
 
             if (fields.HasFlag(StoryIncludeFields.Comments))
             {
-                yield return "comments(:default,person)";
+                yield return "comments(:default,person,file_attachments,google_attachments)";
             }
             else if (fields.HasFlag(StoryIncludeFields.CommentIds))
                 yield return "comment_ids";
