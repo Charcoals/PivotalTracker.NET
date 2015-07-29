@@ -31,7 +31,7 @@ namespace PivotalTrackerDotNet.Tests
         [Test]
         public void CanFilterByState()
         {
-            Assert.AreEqual("state:unscheduled", FilteringCriteria.FilterBy.State(StoryStatus.UnScheduled).ToString());
+            Assert.AreEqual("state:unscheduled", FilteringCriteria.FilterBy.State(StoryStatus.Unscheduled).ToString());
         }
 
         [Test]

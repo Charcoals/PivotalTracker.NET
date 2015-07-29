@@ -2,8 +2,8 @@
 {
     public enum StoryStatus
     {
-        UnScheduled, 
-        UnStarted, 
+        Unscheduled, 
+        Unstarted, 
         Started, 
         Finished, 
         Delivered, 

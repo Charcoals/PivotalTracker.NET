@@ -140,6 +140,23 @@ namespace PivotalTrackerDotNet
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(IterationEndPoint, projectId);
+            
+            return this.GetIterations(request);
+        }
+
+        public List<Iteration> GetAllIterations(int projectId, StoryIncludeFields fields)
+        {
+            var request = BuildGetRequest();
+            request.Resource = string.Format(IterationEndPoint, projectId);
+
+            string fieldsQuery = ":default";
+
+            var fieldsToInclude = this.GetFieldsNames(fields);
+            
+            if (fieldsToInclude.Any())
+                fieldsQuery += "," + string.Join(",", fieldsToInclude);
+            
+            request.AddQueryParameter("fields", ":default,stories(" + fieldsQuery + ")");
 
             return this.GetIterations(request);
         }

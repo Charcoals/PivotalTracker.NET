@@ -7,6 +7,7 @@ namespace PivotalTrackerDotNet
     public interface IStoryService
     {
         List<Iteration> GetAllIterations(int projectId);
+        List<Iteration> GetAllIterations(int projectId, StoryIncludeFields fields);
         PagedResult<Iteration> GetAllIterations(int projectId, int limit, int offset);
         List<Iteration> GetLastIterations(long projectId, int number);
         List<Iteration> GetCurrentIterations(int projectId);

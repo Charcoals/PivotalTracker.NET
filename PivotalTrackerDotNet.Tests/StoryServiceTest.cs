@@ -360,7 +360,7 @@ namespace PivotalTrackerDotNet.Tests
                 StoryType     = StoryType.Feature,
                 Description   = "bla bla bla and more bla",
                 ProjectId     = Constants.ProjectId,
-                CurrentState  = StoryStatus.Delivered,
+                CurrentState  = StoryStatus.Unscheduled,
                 Estimate      = 2
             };
 
@@ -477,9 +477,71 @@ namespace PivotalTrackerDotNet.Tests
         [Test]
         public void CanGetAllIterations()
         {
+            var story = new Story
+            {
+                Name = "Nouvelle histoire",
+                RequestedById = Constants.UserId,
+                StoryType = StoryType.Feature,
+                Description = "bla bla bla and more bla",
+                ProjectId = Constants.ProjectId,
+                Deadline = DateTimeOffset.Now,
+                CurrentState = StoryStatus.Unstarted
+            };
+
+            var savedStory = this.storyService.AddNewStory(Constants.ProjectId, story);
+
+            var task = this.storyService.AddNewTask(new Task { Description = "stuff stuff stuff", StoryId = savedStory.Id, ProjectId = Constants.ProjectId });
+            this.storyService.AddComment(Constants.ProjectId, savedStory.Id, "A comment");
+
             var iterations = this.storyService.GetAllIterations(Constants.ProjectId);
             Assert.Greater(iterations.Count, 0);
             Assert.NotNull(iterations[0].Start);
+            Assert.NotNull(iterations[0].Stories);
+            Assert.Greater(iterations[0].Stories.Count, 0);
+
+            Assert.IsNull(iterations[0].Stories[0].Followers);
+            Assert.IsNull(iterations[0].Stories[0].Comments);
+            Assert.IsNull(iterations[0].Stories[0].Tasks);
+            Assert.IsNull(iterations[0].Stories[0].RequestedBy);
+        }
+
+        [Test]
+        public void CanGetAllIterationsWithStoryFields()
+        {
+            var story = new Story
+            {
+                Name          = "Nouvelle histoire",
+                RequestedById = Constants.UserId,
+                StoryType     = StoryType.Feature,
+                Description   = "bla bla bla and more bla",
+                ProjectId     = Constants.ProjectId,
+                Deadline      = DateTimeOffset.Now,
+                CurrentState  = StoryStatus.Unstarted
+            };
+
+            var savedStory = this.storyService.AddNewStory(Constants.ProjectId, story);
+
+            var task = this.storyService.AddNewTask(new Task { Description = "stuff stuff stuff", StoryId = savedStory.Id, ProjectId = Constants.ProjectId });
+            this.storyService.AddComment(Constants.ProjectId, savedStory.Id, "A comment");
+
+            var iterations = this.storyService.GetAllIterations(Constants.ProjectId, StoryIncludeFields.Owners | 
+                                                                                     StoryIncludeFields.OwnerIds | 
+                                                                                     StoryIncludeFields.Followers | 
+                                                                                     StoryIncludeFields.FollowerIds | 
+                                                                                     StoryIncludeFields.Comments | 
+                                                                                     StoryIncludeFields.Tasks |
+                                                                                     StoryIncludeFields.RequestedBy);
+            Assert.Greater(iterations.Count, 0);
+            Assert.NotNull(iterations[0].Start);
+            Assert.NotNull(iterations[0].Stories);
+            Assert.Greater(iterations[0].Stories.Count, 0);
+            Assert.NotNull(iterations[0].Stories[0].Followers);
+            Assert.NotNull(iterations[0].Stories[0].Comments);
+            Assert.NotNull(iterations[0].Stories[0].Tasks);
+            Assert.Greater(iterations[0].Stories[0].Followers.Count, 0);
+            Assert.Greater(iterations[0].Stories[0].Comments.Count, 0);
+            Assert.Greater(iterations[0].Stories[0].Tasks.Count, 0);
+            Assert.NotNull(iterations[0].Stories[0].RequestedBy);
         }
 
         [Test]

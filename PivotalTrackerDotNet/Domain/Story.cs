@@ -68,21 +68,41 @@ namespace PivotalTrackerDotNet.Domain
 
         public string ToJson()
         {
-            var values = new JObject(new JProperty("name", Name),
-                                new JProperty("story_type", StoryType.ToString().ToLower()),
-                                new JProperty("description", Description),
-                                new JProperty("requested_by_id", RequestedById),
-                                new JProperty("owner_ids", new JArray(OwnerIds)),                                
-                                new JProperty("labels", new JArray(Labels.Select(l => l.Name))));
+            var values = new JObject(
+                  new JProperty("name", this.Name)
+                , new JProperty("story_type", this.StoryType.ToString().ToLower())
+                , new JProperty("description", this.Description)
+                , new JProperty("requested_by_id", this.RequestedById)
+                , new JProperty("current_state", this.CurrentState.ToString().ToLower())
+            );
 
-            if (Estimate.HasValue)
-            {
-                values.Add(new JProperty("estimate", Estimate));
-            }
+            if (this.Owners != null)
+                values.Add(new JProperty("owner_ids", new JArray(this.Owners.Select(o => o.Id))));
+            else
+                values.Add(new JProperty("owner_ids", new JArray(this.OwnerIds)));
+
+            if (this.LabelIds != null)
+                values.Add(new JProperty("label_ids", new JArray(this.LabelIds)));
+            else
+                values.Add(new JProperty("labels", new JArray(this.Labels.Select(l => l.Name))));
+
+            if (this.AcceptedAt.HasValue)
+                values.Add(new JProperty("accepted_at", this.AcceptedAt));
+
+            if (this.Estimate.HasValue)
+                values.Add(new JProperty("estimate", this.Estimate));
+
+            // Can only be set on releases
+            if (this.StoryType == StoryType.Release && this.Deadline.HasValue)
+                values.Add(new JProperty("deadline", this.Deadline));
+
+            // TODO: Add scheduling properties
+            ////new JProperty("group", Group.ToString().ToLower()), --- public enum StoryScheduleGroup { Scheduled, Unscheduled, Current }
+            ////new JProperty("before_id", BeforeId),
+            ////new JProperty("after_id", AfterId)
 
             return values.ToString();
         }
-
     }
 
     // <story>
