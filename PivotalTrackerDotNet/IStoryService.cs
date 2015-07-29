@@ -22,7 +22,9 @@ namespace PivotalTrackerDotNet
         List<Story> GetAllStories(int projectId, StoryIncludeFields fields);
         PagedResult<Story> GetAllStories(int projectId, int limit, int offset);
         List<Story> GetAllStoriesMatchingFilter(int projectId, string filter);
+        List<Story> GetAllStoriesMatchingFilter(int projectId, string filter, StoryIncludeFields fields);
         List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter);
+        List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter, StoryIncludeFields fields);
         PagedResult<Story> GetAllStoriesMatchingFilter(int projectId, string filter, int limit, int offset);
         PagedResult<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter, int limit, int offset);
 

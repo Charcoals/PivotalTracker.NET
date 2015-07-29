@@ -70,6 +70,23 @@ namespace PivotalTrackerDotNet
             return this.GetStories(request);
         }
 
+        public List<Story> GetAllStoriesMatchingFilter(int projectId, string filter, StoryIncludeFields fields)
+        {
+            var request = BuildGetRequest();
+            request.Resource = string.Format(StoryFilterEndpoint, projectId, filter);
+
+            string fieldsQuery = ":default";
+
+            var fieldsToInclude = this.GetFieldsNames(fields);
+            
+            if (fieldsToInclude.Any())
+                fieldsQuery += "," + string.Join(",", fieldsToInclude);
+            
+            request.AddQueryParameter("fields", fieldsQuery);
+
+            return this.GetStories(request);
+        }
+
         public PagedResult<Story> GetAllStoriesMatchingFilter(int projectId, string filter, int limit, int offset)
         {
             var request = this.BuildGetRequest(string.Format(StoryFilterEndpoint, projectId, filter))
@@ -86,6 +103,11 @@ namespace PivotalTrackerDotNet
         public List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter)
         {
             return this.GetAllStoriesMatchingFilter(projectId, filter.ToString());
+        }
+
+        public List<Story> GetAllStoriesMatchingFilter(int projectId, FilteringCriteria filter, StoryIncludeFields fields)
+        {
+            return this.GetAllStoriesMatchingFilter(projectId, filter.ToString(), fields);
         }
 
         public Story FinishStory(int projectId, int storyId)
@@ -203,7 +225,7 @@ namespace PivotalTrackerDotNet
 
         public List<Story> GetIceboxStories(int projectId)
         {
-            return this.GetAllStoriesMatchingFilter(projectId, "state:unscheduled");
+            return this.GetAllStoriesMatchingFilter(projectId, FilteringCriteria.FilterBy.State(StoryStatus.Unscheduled));
         }
 
         public List<Story> GetBacklogStories(int projectId)
