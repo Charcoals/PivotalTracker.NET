@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using PivotalTrackerDotNet.Domain;
@@ -51,13 +52,13 @@ namespace PivotalTrackerDotNet
 
         public FilteringCriteria CreatedSince(DateTime since)
         {
-            AddFilter(string.Format("created_since:{0}", since.ToString("d")));
+            AddFilter(string.Format("created_since:{0}", since.ToString("d", CultureInfo.GetCultureInfo("en-US"))));
             return this;
         }
 
         public FilteringCriteria ModifiedSince(DateTime since)
         {
-            AddFilter(string.Format("modified_since:{0}", since.ToString("d")));
+            AddFilter(string.Format("modified_since:{0}", since.ToString("d", CultureInfo.GetCultureInfo("en-US"))));
             return this;
         }
 
