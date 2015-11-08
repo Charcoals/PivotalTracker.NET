@@ -10,7 +10,7 @@ namespace PivotalTrackerDotNet.Domain {
         public string Kind { get; set; }
         public int ID { get; set; }
 
-		public string toString() {
+		public override string ToString() {
 			return String.Format("{0} - {1}", ID, Name);
 		}
     }
