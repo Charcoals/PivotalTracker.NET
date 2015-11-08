@@ -11,3 +11,4 @@ user.config
 *.Publish.xml
 .nuget/PivotalTrackerDotNet/lib/net40
 PivotalTrackerDotNet.*.nupkg
+packages
