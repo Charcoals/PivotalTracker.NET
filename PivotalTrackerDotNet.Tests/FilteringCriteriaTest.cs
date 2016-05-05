@@ -1,6 +1,5 @@
 using System;
 using NUnit.Framework;
-using System.Text;
 using PivotalTrackerDotNet.Domain;
 
 namespace PivotalTrackerDotNet.Tests
@@ -40,14 +39,14 @@ namespace PivotalTrackerDotNet.Tests
         public void CanFilterByModified()
         {
 
-            Assert.AreEqual("modified_since:9/9/2008", FilteringCriteria.FilterBy.ModifiedSince(new DateTime(2008,9,9)).ToString());
+            Assert.AreEqual("modified_since:09/09/2008", FilteringCriteria.FilterBy.ModifiedSince(new DateTime(2008,9,9)).ToString());
         }
 
         [Test]
         public void CanFilterByCreated()
         {
 
-            Assert.AreEqual("created_since:9/9/2008", FilteringCriteria.FilterBy.CreatedSince(new DateTime(2008, 9, 9)).ToString());
+            Assert.AreEqual("created_since:09/09/2008", FilteringCriteria.FilterBy.CreatedSince(new DateTime(2008, 9, 9)).ToString());
         }
 
         [Test]

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using PivotalTrackerDotNet.Domain;
 using RestSharp;
-using RestSharp.Contrib;
-using RestSharp.Deserializers;
 using Parallel = System.Threading.Tasks.Parallel;
 
 namespace PivotalTrackerDotNet
@@ -32,25 +28,24 @@ namespace PivotalTrackerDotNet
         Story FinishStory(int projectId, int storyId);
         Story StartStory(int projectId, int storyId);
         Story GetStory(int projectId, int storyId);
-        Story RemoveStory(int projectId, int storyId);
+        void RemoveStory(int projectId, int storyId);
         Story UpdateStory(int projectId, Story story);
 
         Task AddNewTask(Task task);
         Task GetTask(int projectId, int storyId, int taskId);
         
         bool RemoveTask(int projectId, int storyId, int taskId);
-        void SaveTask(Task task);
+        Task SaveTask(Task task);
         void ReorderTasks(int projectId, int storyId, List<Task> tasks);
         void AddComment(int projectId, int storyId, string comment);
     }
 
     public class StoryService : AAuthenticatedService, IStoryService
     {
-        const string SpecifiedIterationEndpoint = "projects/{0}/iterations/{1}";
+        const string SpecifiedIterationEndpoint = "projects/{0}/iterations?scope={1}";
         const string SingleStoryEndpoint = "projects/{0}/stories/{1}";
         const string StoriesEndpoint = "projects/{0}/stories";
         const string TaskEndpoint = "projects/{0}/stories/{1}/tasks";
-        const string SaveNewTaskEndpoint = "projects/{0}/stories/{1}/tasks?task[description]={2}";
         const string SaveNewCommentEndpoint = "projects/{0}/stories/{1}/notes?note[text]={2}";
         const string SingleTaskEndpoint = "projects/{0}/stories/{1}/tasks/{2}";//projects/$PROJECT_ID/stories/$STORY_ID/tasks/$TASK_ID
         const string StoryStateEndpoint = "projects/{0}/stories/{1}?story[current_state]={2}";
@@ -60,8 +55,8 @@ namespace PivotalTrackerDotNet
         const string IterationPaginationEndPoint = IterationEndPoint+"?offset={1}&limit={2}";
         const string IterationRecentEndPoint = IterationEndPoint + "/done?offset=-{1}";
 
-        public StoryService(AuthenticationToken token, bool needsSSL = false)
-            : base(token, needsSSL)
+        public StoryService(string token)
+            : base(token)
         {
         }
 
@@ -134,11 +129,9 @@ namespace PivotalTrackerDotNet
 
         private List<Iteration> GetIteration(RestRequest request)
         {
-            var response = RestClient.Execute(request);
-            var iterations =new List<Iteration>();
-            var serializer = new RestSharpXmlDeserializer();
-            var el = ParseContent(response);
-            iterations.AddRange(el.Elements("iteration").Select(iteration => serializer.Deserialize<Iteration>(iteration.ToString())));
+            var el = RestClient.ExecuteRequestWithChecks(request);
+            var iterations = new List<Iteration>();
+            iterations.AddRange(el.Select(iteration => iteration.ToObject<Iteration>()));
             return iterations;
         }
 
@@ -174,7 +167,6 @@ namespace PivotalTrackerDotNet
 
         public List<Story> GetCurrentStories(int projectId)
         {
-
             return GetStoriesByIterationType(projectId, "current");
         }
 
@@ -193,44 +185,40 @@ namespace PivotalTrackerDotNet
             return GetStoriesByIterationType(projectId, "backlog");
         }
 
-        public Story RemoveStory(int projectId, int storyId)
+        public void RemoveStory(int projectId, int storyId)
         {
             var request = BuildDeleteRequest();
             request.Resource = string.Format(SingleStoryEndpoint, projectId, storyId);
 
-            var response = RestClient.Execute<Story>(request);
-            var story = response.Data;
-
-            return story;
+            RestClient.ExecuteRequestWithChecks(request);
         }
 
         public Story AddNewStory(int projectId, Story toBeSaved)
         {
             var request = BuildPostRequest();
             request.Resource = string.Format(StoriesEndpoint, projectId);
-            request.AddParameter("application/xml", toBeSaved.ToXml(), ParameterType.RequestBody);
+            request.AddParameter("application/json", toBeSaved.ToJson(), ParameterType.RequestBody);
 
-            var response = RestClient.Execute<Story>(request);
-            return response.Data;
+            return RestClient.ExecuteRequestWithChecks<Story>(request);
         }
 
         public Story UpdateStory(int projectId, Story story)
         {
-            var toBeUpdated = FindStory(projectId, story.Id);
-
             var request = BuildPutRequest();
             request.Resource = string.Format(SingleStoryEndpoint, projectId, story.Id);
-            request.AddParameter("application/xml", toBeUpdated.GenerateXmlDiff(story), ParameterType.RequestBody);
+            request.AddParameter("application/json", story.ToJson(), ParameterType.RequestBody);
 
-            var response = RestClient.Execute<Story>(request);
-            return response.Data;
+            return RestClient.ExecuteRequestWithChecks<Story>(request);
         }
 
-        public void SaveTask(Task task)
+        public Task SaveTask(Task task)
         {
             var request = BuildPutRequest();
-            request.Resource = string.Format(TaskEndpoint + "/{2}?task[description]={3}&task[complete]={4}&task[position]={5}", task.ProjectId, task.ParentStoryId, task.Id, HttpUtility.UrlEncode(task.Description), task.Complete.ToString().ToLower(), task.Position);
-            RestClient.Execute(request);
+            request.Resource = string.Format(SingleTaskEndpoint, task.ProjectId, task.StoryId, task.Id);
+            request.AddParameter("application/json", task.ToJson(), ParameterType.RequestBody);
+            var savedTask = RestClient.ExecuteRequestWithChecks<Task>(request);
+            savedTask.ProjectId = task.ProjectId;
+            return savedTask;
         }
 
         public void ReorderTasks(int projectId, int storyId, List<Task> tasks)
@@ -239,19 +227,17 @@ namespace PivotalTrackerDotNet
             {
                 var request = BuildPutRequest();
                 request.Resource = string.Format(TaskEndpoint + "/{2}?task[position]={3}", t.ProjectId,
-                                                 t.ParentStoryId, t.Id, t.Position);
-                RestClient.Execute(request);
+                                                 t.StoryId, t.Id, t.Position);
+                RestClient.ExecuteRequestWithChecks(request);
             });
         }
 
         public Task AddNewTask(Task task)
         {
             var request = BuildPostRequest();
-            request.Resource = string.Format(SaveNewTaskEndpoint, task.ProjectId, task.ParentStoryId, task.Description);
-            //request.AddParameter("application/xml", toBeSaved.ToXml(), ParameterType.RequestBody);
-            var response = RestClient.Execute<Task>(request);
-            var savedTask = response.Data;
-            savedTask.ParentStoryId = task.ParentStoryId;
+            request.Resource = string.Format(TaskEndpoint, task.ProjectId, task.StoryId);
+            request.AddParameter("application/json", task.ToJson(), ParameterType.RequestBody);
+            var savedTask = RestClient.ExecuteRequestWithChecks<Task>(request);
             savedTask.ProjectId = task.ProjectId;
             return savedTask;
         }
@@ -260,9 +246,8 @@ namespace PivotalTrackerDotNet
         {
             var request = BuildDeleteRequest();
             request.Resource = string.Format(SingleTaskEndpoint, projectId, storyId, taskId);
-
-            var response = RestClient.Execute<Task>(request);
-            return response.Data == null;
+            var response = RestClient.ExecuteRequestWithChecks<Task>(request);
+            return response == null;
         }
 
         public Task GetTask(int projectId, int storyId, int taskId)
@@ -270,9 +255,8 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(SingleTaskEndpoint, projectId, storyId, taskId);
 
-            var response = RestClient.Execute<Task>(request);
-            var output = response.Data;
-            output.ParentStoryId = storyId;
+            var output = RestClient.ExecuteRequestWithChecks<Task>(request);
+            output.StoryId = storyId;
             output.ProjectId = projectId;
             return output;
         }
@@ -281,7 +265,7 @@ namespace PivotalTrackerDotNet
         {
             var request = BuildPostRequest();
             request.Resource = string.Format(SaveNewCommentEndpoint, projectId, storyId, comment);
-            RestClient.Execute(request);
+            RestClient.ExecuteRequestWithChecks(request);
         }
 
         Story FindStory(int projectId, int storyId)
@@ -289,9 +273,7 @@ namespace PivotalTrackerDotNet
             var request = BuildGetRequest();
             request.Resource = string.Format(SingleStoryEndpoint, projectId, storyId);
 
-            var response = RestClient.Execute<Story>(request);
-            var story = response.Data;
-            return story;
+            return RestClient.ExecuteRequestWithChecks<Story>(request);
         }
 
         List<Iteration> GetIterationsByType(int projectId, string iterationType)
@@ -305,24 +287,26 @@ namespace PivotalTrackerDotNet
         {
             var request = BuildGetRequest();
             request.Resource = string.Format(SpecifiedIterationEndpoint, projectId, iterationType);
-            var response = RestClient.Execute(request);
+            var el = RestClient.ExecuteRequestWithChecks(request);
             
             var stories = new Stories();
-            var serializer = new RestSharpXmlDeserializer();
-            var el = ParseContent(response);
-            stories.AddRange(el.Descendants("story").Select(storey => serializer.Deserialize<Story>(storey.ToString())));
+            stories.AddRange(el[0]["stories"].Select(storey => storey.ToObject<Story>()));
             return stories;
         }
 
         List<Story> GetStories(RestRequest request)
         {
-            var response = RestClient.Execute(request);
+            var el = RestClient.ExecuteRequestWithChecks(request);
             
             var stories = new Stories();
-            var serializer = new RestSharpXmlDeserializer();
-            var el = ParseContent(response);
-            stories.AddRange(el.Elements("story").Select(storey => serializer.Deserialize<Story>(storey.ToString())));
+            stories.AddRange(el.Select(storey => storey.ToObject<Story>()));
             return stories;
+        }
+
+        public List<Task> GetTasksForStory(int projectId, Story story) {
+            var request = this.BuildGetRequest();
+            request.Resource = string.Format(TaskEndpoint, projectId, story.Id);
+            return RestClient.ExecuteRequestWithChecks<List<Task>>(request);
         }
     }
 }

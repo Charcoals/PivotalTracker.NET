@@ -8,7 +8,7 @@ namespace PivotalTrackerDotNet.Tests {
 
 		[TestFixtureSetUp]
 		public void TestFixtureSetUp() {
-			membershipService = new MembershipService(AuthenticationService.Authenticate(Constants.Username, Constants.Password));
+			membershipService = new MembershipService(Constants.ApiToken);
 		}
 
 		[Test]

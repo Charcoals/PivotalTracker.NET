@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace PivotalTrackerDotNet.Domain
 {
@@ -6,7 +7,7 @@ namespace PivotalTrackerDotNet.Domain
     {
         public static DateTime? ConvertTime(this string date)
         {
-            return !string.IsNullOrWhiteSpace(date) ? (DateTime?)DateTime.Parse(date) : null;            
+            return !string.IsNullOrWhiteSpace(date) ? (DateTime?)DateTime.Parse(date, CultureInfo.GetCultureInfo("en-US")) : null; // Pivotal uses US dates, so use the right converter
         }
     }
 }
