@@ -53,11 +53,5 @@ namespace PivotalTrackerDotNet.Domain
         {
             return this.Name;
         }
-
-        public override int GetHashCode()
-        {
-            // TODO: Fix this
-            return Name.GetHashCode();
-        }
     }
 }
