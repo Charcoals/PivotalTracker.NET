@@ -1,6 +1,8 @@
 PivotalTracker.NET
 ==================
 
+[![Build Status](https://travis-ci.org/palfrey/PivotalTracker.NET.svg?branch=travis)](https://travis-ci.org/palfrey/PivotalTracker.NET)
+
 PivotalTracker.NET is a wrapper around the [Rest API](https://www.pivotaltracker.com/help/api) provided by Pivotal Labs, the makers of [Pivotal Track](https://www.pivotaltracker.com).
 
 With it, developers can retrieve projects, create stories, delete stories, edit stories, add tasks to stories, remove tasks to stories, edit tasks, and add comment to stories.

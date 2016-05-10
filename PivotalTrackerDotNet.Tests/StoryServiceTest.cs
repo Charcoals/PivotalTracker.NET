@@ -264,7 +264,7 @@ namespace PivotalTrackerDotNet.Tests
             savedStory.Name = "Call be New name";
             savedStory.Description = "wololo";
             savedStory.Estimate = 1;
-            savedStory.Labels = new List<Label> {"laby hh,pool"};
+            savedStory.Labels = new List<Label> {"laby hh and pool"};
 
             var updatedStory = storyService.UpdateStory(Constants.ProjectId, savedStory);
             VerifyStory(savedStory, updatedStory);

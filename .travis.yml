@@ -1,0 +1,9 @@
+sudo: false
+language: csharp
+solution: PivotalTrackerDotNet.sln
+install:
+  - nuget restore PivotalTrackerDotNet.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release PivotalTrackerDotNet.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./PivotalTrackerDotNet.Tests/bin/Release/PivotalTrackerDotNet.Tests.dll

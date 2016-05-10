@@ -60,7 +60,7 @@
     <Compile Include="Domain\Story.cs" />
     <Compile Include="Domain\Task.cs" />
     <Compile Include="FilteringCriteria.cs" />
-    <Compile Include="MembershipService.cs" />
+    <Compile Include="MemberShipService.cs" />
     <Compile Include="PivotalTrackerRestEndpoint.cs" />
     <Compile Include="ProjectService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,9 +72,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(TargetDir)\$(TargetName).dll"  "$(SolutionDir).nuget\PivotalTrackerDotNet\lib\net40\$(ProjectName).dll"</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">copy /y "$(TargetDir)\$(TargetName).dll"  "$(SolutionDir).nuget\PivotalTrackerDotNet\lib\net40\$(ProjectName).dll"</PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
