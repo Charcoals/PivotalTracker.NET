@@ -31,12 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=105.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.1.0\lib\net4\RestSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,22 +50,74 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AAuthenticatedService.cs" />
+    <Compile Include="AccountService.cs" />
+    <Compile Include="AuthenticationService.cs" />
+    <Compile Include="DictionaryDeserializer.cs" />
+    <Compile Include="Domain\Account.cs" />
+    <Compile Include="Domain\AccountMembership.cs" />
+    <Compile Include="Domain\AccountPermissions.cs" />
+    <Compile Include="Domain\AccountStatus.cs" />
+    <Compile Include="Domain\AccountSummary.cs" />
+    <Compile Include="Domain\EpicsSearchResult.cs" />
+    <Compile Include="Domain\Me.cs" />
+    <Compile Include="Domain\AccountingType.cs" />
+    <Compile Include="Domain\Change.cs" />
+    <Compile Include="Domain\ChangeKind.cs" />
+    <Compile Include="Domain\ChangeType.cs" />
+    <Compile Include="Domain\Comment.cs" />
+    <Compile Include="Domain\CountsByStoryState.cs" />
+    <Compile Include="Domain\FileAttachment.cs" />
+    <Compile Include="Domain\GoogleAttachment.cs" />
+    <Compile Include="Domain\Integration.cs" />
+    <Compile Include="Domain\IntegrationType.cs" />
+    <Compile Include="Domain\MembershipSummary.cs" />
     <Compile Include="Domain\Activity.cs" />
+    <Compile Include="Domain\AuthenticationToken.cs" />
+    <Compile Include="Domain\Epic.cs" />
     <Compile Include="Domain\Extensions.cs" />
     <Compile Include="Domain\Iteration.cs" />
     <Compile Include="Domain\Label.cs" />
-    <Compile Include="Domain\Membership.cs" />
-    <Compile Include="Domain\Note.cs" />
+    <Compile Include="Domain\PagedResult.cs" />
+    <Compile Include="Domain\Pagination.cs" />
+    <Compile Include="Domain\PersonReference.cs" />
+    <Compile Include="Domain\PivotalTrackerResource.cs" />
+    <Compile Include="Domain\PrimaryResource.cs" />
+    <Compile Include="Domain\ProjectReference.cs" />
+    <Compile Include="Domain\ResourceKind.cs" />
+    <Compile Include="Domain\SearchResult.cs" />
+    <Compile Include="Domain\SearchResultContainer.cs" />
+    <Compile Include="Domain\StoriesSearchResult.cs" />
+    <Compile Include="IAccountService.cs" />
+    <Compile Include="IPivotalTrackerClient.cs" />
+    <Compile Include="SearchService.cs" />
+    <Compile Include="PivotalTrackerException.cs" />
+    <Compile Include="PivotalTrackerResourceNotFoundException.cs" />
+    <Compile Include="ProjectIncludeFields.cs" />
+    <Compile Include="Domain\ProjectMembership.cs" />
     <Compile Include="Domain\Person.cs" />
     <Compile Include="Domain\Project.cs" />
+    <Compile Include="Domain\ProjectRole.cs" />
+    <Compile Include="Domain\Stories.cs" />
     <Compile Include="Domain\Story.cs" />
+    <Compile Include="Domain\StoryCounts.cs" />
+    <Compile Include="Domain\StoryStatus.cs" />
+    <Compile Include="Domain\StoryType.cs" />
     <Compile Include="Domain\Task.cs" />
+    <Compile Include="Domain\TimeZone.cs" />
+    <Compile Include="Domain\WebHook.cs" />
     <Compile Include="FilteringCriteria.cs" />
-    <Compile Include="MemberShipService.cs" />
+    <Compile Include="IAuthenticationService.cs" />
+    <Compile Include="IMembershipService.cs" />
+    <Compile Include="IProjectService.cs" />
+    <Compile Include="IStoryService.cs" />
+    <Compile Include="MembershipService.cs" />
+    <Compile Include="PivotalTrackerClient.cs" />
     <Compile Include="PivotalTrackerRestEndpoint.cs" />
     <Compile Include="ProjectService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RestExtensions.cs" />
+    <Compile Include="RestClientExtensions.cs" />
+    <Compile Include="RestRequestExtensions.cs" />
+    <Compile Include="StoryIncludeFields.cs" />
     <Compile Include="StoryService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -72,9 +125,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">copy /y "$(TargetDir)\$(TargetName).dll"  "$(SolutionDir).nuget\PivotalTrackerDotNet\lib\net40\$(ProjectName).dll"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
