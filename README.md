@@ -1,7 +1,7 @@
 PivotalTracker.NET
 ==================
 
-[![Build Status](https://travis-ci.org/palfrey/PivotalTracker.NET.svg?branch=travis)](https://travis-ci.org/palfrey/PivotalTracker.NET)
+[![Build Status](https://travis-ci.org/Charcoals/PivotalTracker.NET.svg?branch=master)](https://travis-ci.org/Charcoals/PivotalTracker.NET)
 
 PivotalTracker.NET is a wrapper around the [Rest API](https://www.pivotaltracker.com/help/api) provided by Pivotal Labs, the makers of [Pivotal Track](https://www.pivotaltracker.com).
 
