@@ -54,12 +54,12 @@ namespace PivotalTrackerDotNet.Tests
         {
             Assert.IsNotNull(me);
             Assert.AreNotEqual(0, me.Id);
-            Assert.IsNotNullOrEmpty(me.Email);
-            Assert.IsNotNullOrEmpty(me.Initials);
-            Assert.IsNotNullOrEmpty(me.Kind);
-            Assert.IsNotNullOrEmpty(me.Name);
-            Assert.IsNotNullOrEmpty(me.Username);
-            Assert.IsNotNullOrEmpty(me.ApiToken);
+            Assert.IsFalse(string.IsNullOrEmpty(me.Email));
+            Assert.IsFalse(string.IsNullOrEmpty(me.Initials));
+            Assert.IsFalse(string.IsNullOrEmpty(me.Kind));
+            Assert.IsFalse(string.IsNullOrEmpty(me.Name));
+            Assert.IsFalse(string.IsNullOrEmpty(me.Username));
+            Assert.IsFalse(string.IsNullOrEmpty(me.ApiToken));
             Assert.Greater(me.CreatedAt, DateTimeOffset.MinValue);
             Assert.Greater(me.UpdatedAt, DateTimeOffset.MinValue);
             Assert.IsNotNull(me.TimeZone);
@@ -74,8 +74,8 @@ namespace PivotalTrackerDotNet.Tests
             {
                 Assert.AreNotEqual(0, project.Id);
                 Assert.AreNotEqual(0, project.ProjectId);
-                Assert.IsNotNullOrEmpty(project.Kind);
-                Assert.IsNotNullOrEmpty(project.ProjectName);
+                Assert.IsFalse(string.IsNullOrEmpty(project.Kind));
+                Assert.IsFalse(string.IsNullOrEmpty(project.ProjectName));
                 Assert.IsNotNull(project.ProjectColor);
                 Assert.IsNotNull(project.Role);
                 Assert.Greater(project.LastViewedAt, DateTimeOffset.MinValue);

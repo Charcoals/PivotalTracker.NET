@@ -1,5 +1,6 @@
 ﻿using PivotalTrackerDotNet.Domain;
 using RestSharp;
+using RestSharp.Authenticators;
 
 namespace PivotalTrackerDotNet
 {

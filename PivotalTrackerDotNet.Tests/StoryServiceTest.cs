@@ -608,10 +608,9 @@ namespace PivotalTrackerDotNet.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(PivotalTrackerResourceNotFoundException))]
         public void StoryNotFoundThrowsException()
         {
-            var result = this.storyService.GetStory(Constants.ProjectId, 1234);
+            Assert.That(() => this.storyService.GetStory(Constants.ProjectId, 1234), Throws.TypeOf<PivotalTrackerResourceNotFoundException>());
         }
 
         [Test]
