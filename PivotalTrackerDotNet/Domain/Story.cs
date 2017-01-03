@@ -6,7 +6,42 @@ using Newtonsoft.Json.Linq;
 
 namespace PivotalTrackerDotNet.Domain
 {
-    public class Story
+    public interface IStory
+    {
+        int Id { get; set; }
+        int ProjectId { get; set; }
+        string Name { get; set; }
+        string Description { get; set; }
+        StoryType StoryType { get; set; }
+        StoryStatus CurrentState { get; set; }
+        int? Estimate { get; set; }
+        DateTimeOffset? AcceptedAt { get; set; }
+        DateTimeOffset? Deadline { get; set; }
+        int? RequestedById { get; set; }
+        Person RequestedBy { get; set; }
+        int OwnedById { get; set; }
+        List<int> OwnerIds { get; set; }
+        List<Person> Owners { get; set; }
+        List<int> LabelIds { get; set; }
+        List<Label> Labels { get; set; }
+        List<int> TaskIds { get; set; }
+        List<Task> Tasks { get; set; }
+        List<int> FollowerIds { get; set; }
+        List<Person> Followers { get; set; }
+        List<int> CommentIds { get; set; }
+        List<Comment> Comments { get; set; }
+        DateTimeOffset CreatedAt { get; set; }
+        DateTimeOffset UpdatedAt { get; set; }
+        int? BeforeId { get; set; }
+        int? AfterId { get; set; }
+        int? IntegrationId { get; set; }
+        string ExternalId { get; set; }
+        string Url { get; set; }
+        string Kind { get; set; }
+        string ToJson();
+    }
+
+    public class Story : IStory
     {
         public Story()
         {
@@ -80,6 +115,8 @@ namespace PivotalTrackerDotNet.Domain
                 values.Add(new JProperty("owner_ids", new JArray(this.Owners.Select(o => o.Id))));
             else
                 values.Add(new JProperty("owner_ids", new JArray(this.OwnerIds)));
+            if(this.Tasks !=null)
+                values.Add(new JProperty("tasks", this.Tasks));
 
             if (this.LabelIds != null)
                 values.Add(new JProperty("label_ids", new JArray(this.LabelIds)));
