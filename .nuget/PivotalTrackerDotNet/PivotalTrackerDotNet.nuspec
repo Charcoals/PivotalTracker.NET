@@ -3,8 +3,8 @@
     <metadata>
         <id>PivotalTrackerDotNet</id>
         <version>5.0.0.0</version>
-        <authors>Boguste Hameyie,Alex Ullrich</authors>
-        <owners>Boguste Hameyie,Alex Ullrich</owners>
+        <authors>Boguste Hameyie,Alex Ullrich,Martin Hyldahl</authors>
+        <owners>Boguste Hameyie,Alex Ullrich,Martin Hyldahl</owners>
         <licenseUrl>https://github.com/Charcoals/PivotalTracker.NET/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/Charcoals/PivotalTracker.NET</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -14,8 +14,8 @@
         <language>en-US</language>
         <tags>Pivotal Tracker</tags>
         <dependencies>
-            <dependency id="Newtonsoft.Json" version="7.0.1" />
-            <dependency id="RestSharp" version="105.1.0.0" />
+            <dependency id="Newtonsoft.Json" version="9.0.1" />
+            <dependency id="RestSharp" version="105.2.3" />
         </dependencies>
     </metadata>
 </package>
