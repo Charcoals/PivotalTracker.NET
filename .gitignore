@@ -13,3 +13,4 @@ user.config
 PivotalTrackerDotNet.*.nupkg
 PivotalTrackerDotNet/PivotalTrackerDotNet.ncrunchproject
 packages
+.vs
