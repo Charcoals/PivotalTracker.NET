@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>PivotalTrackerDotNet</id>
-        <version>5.0.0.1</version>
+        <version>5.0.0.2</version>
         <authors>Boguste Hameyie,Alex Ullrich,Martin Hyldahl</authors>
         <owners>Boguste Hameyie,Alex Ullrich,Martin Hyldahl</owners>
         <licenseUrl>https://github.com/Charcoals/PivotalTracker.NET/blob/master/LICENSE</licenseUrl>
