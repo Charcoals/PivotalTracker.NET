@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
@@ -57,21 +58,41 @@ namespace PivotalTrackerDotNet
 
         private static Dictionary<string, string> GetResponseValues(IRestResponse response)
         {
-            var jObject = JToken.Parse(response.Content);
-            var values = new Dictionary<string, string>();
-
-            foreach (var child in jObject.Children())
+            if (response.Content.Trim().Equals("404 page not found", StringComparison.InvariantCultureIgnoreCase))
             {
-                if (child != null && child.Type == JTokenType.Property)
+                return new Dictionary<string, string>()
+                           {
+                               { "error", response.Content }
+                           };
+            }
+
+            try
+            {
+                var jObject = JToken.Parse(response.Content);
+                var values = new Dictionary<string, string>();
+
+                foreach (var child in jObject.Children())
                 {
-                    var prop = child as JProperty;
-                    if (prop != null)
+                    if (child != null && child.Type == JTokenType.Property)
                     {
-                        values[prop.Name] = prop.Value.ToString();
+                        var prop = child as JProperty;
+                        if (prop != null)
+                        {
+                            values[prop.Name] = prop.Value.ToString();
+                        }
                     }
                 }
+                return values;
             }
-            return values;
+            catch (JsonReaderException)
+            {
+                var message = "Could not read json response: " + response.Content;
+
+                return new Dictionary<string, string>()
+                           {
+                               { "error", message }
+                           };
+            }
         }
     }
 }
