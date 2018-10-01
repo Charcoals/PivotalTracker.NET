@@ -56,6 +56,7 @@ namespace PivotalTrackerDotNet.Domain
         [JsonProperty(PropertyName = "story_type")]
         public StoryType StoryType { get; set; }
 
+        [JsonProperty(PropertyName = "current_state")]
         public StoryStatus CurrentState { get; set; }
         public int? Estimate { get; set; }
         public DateTimeOffset? AcceptedAt { get; set; }
